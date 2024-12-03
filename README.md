@@ -1,131 +1,111 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+# Cherry Leaf Mildew Detection
 
-Welcome Daniel Sundqvist,
+## Business Understanding
+### Dataset Content
+* The dataset contains images of cherry leaves divided into two classes:
+  * Healthy cherry leaves
+  * Cherry leaves infected with powdery mildew
+* The dataset was sourced from Kaggle and contains 2104 images of cherry leaves
+  * Training set: approximately 1682 images (80% of the dataset)
+  * Validation set: approximately 422 images (20% of the dataset)
 
-This is the Code Institute student template for Gitpod. We have preinstalled all of the tools you need to get started. It's perfectly ok to use this template as the basis for your project submissions.
+### Business Requirements
+1. The client is interested in conducting a study to visually differentiate between healthy and powdery mildew infected cherry leaves.
+   * Success Criteria: Create a visual analysis tool that highlights the differences between healthy and infected leaves
+   
+2. The client wants to predict if a cherry leaf is healthy or contains powdery mildew.
+   * Success Criteria: Create a ML model that accurately predicts the condition of a cherry leaf with at least 97% accuracy
 
-You can safely delete this README.md file or change it for your own project. Please do read it at least once, though! It contains some important information about Gitpod and the extensions we use. Some of this information has been updated since the video content was created. The last update to this file was: **June 18, 2024**
+### Hypotheses and Validation
+* Hypothesis 1: Powdery mildew creates visible white spots or patches on cherry leaves
+  * Validation: Image visualization study comparing healthy and infected leaves
+  
+* Hypothesis 2: Machine learning can detect subtle patterns that differentiate healthy from infected leaves
+  * Validation: Development and evaluation of an image classification model
 
-## Gitpod Reminders
-
-To run a frontend (HTML, CSS, Javascript only) application in Gitpod, in the terminal, type:
-
-`python3 -m http.server`
-
-A blue button should appear to click: _Make Public_,
-
-Another blue button should appear to click: _Open Browser_.
-
-To run a backend Python file, type `python3 app.py` if your Python file is named `app.py`, of course.
-
-A blue button should appear to click: _Make Public_,
-
-Another blue button should appear to click: _Open Browser_.
-
-By Default, Gitpod gives you superuser security privileges. Therefore, you do not need to use the `sudo` (superuser do) command in the bash terminal in any of the lessons.
-
-To log into the Heroku toolbelt CLI:
-
-1. Log in to your Heroku account and go to *Account Settings* in the menu under your avatar.
-2. Scroll down to the *API Key* and click *Reveal*
-3. Copy the key
-4. In Gitpod, from the terminal, run `heroku_config`
-5. Paste in your API key when asked
-
-You can now use the `heroku` CLI program - try running `heroku apps` to confirm it works. This API key is unique and private to you, so do not share it. If you accidentally make it public, you can create a new one with _Regenerate API Key_.
-
-### Connecting your Mongo database
-
-- **Connect to Mongo CLI on a IDE**
-- navigate to your MongoDB Clusters Sandbox
-- click **"Connect"** button
-- select **"Connect with the MongoDB shell"**
-- select **"I have the mongo shell installed"**
-- choose **mongosh (2.0 or later)** for : **"Select your mongo shell version"**
-- choose option: **"Run your connection string in your command line"**
-- in the terminal, paste the copied code `mongo "mongodb+srv://<CLUSTER-NAME>.mongodb.net/<DBname>" --apiVersion 1 --username <USERNAME>`
-  - replace all `<angle-bracket>` keys with your own data
-- enter password _(will not echo **\*\*\*\*** on screen)_
-
-------
-
-## Release History
-
-We continually tweak and adjust this template to help give you the best experience. Here is the version history:
-
-**June 18, 2024,** Add Mongo back into template
-
-**June 14, 2024,** Temporarily remove Mongo until the key issue is resolved
-
-**May 28 2024:** Fix Mongo and Links installs
-
-**April 26 2024:** Update node version to 16
-
-**September 20 2023:** Update Python version to 3.9.17.
-
-**September 1 2021:** Remove `PGHOSTADDR` environment variable.
-
-**July 19 2021:** Remove `font_fix` script now that the terminal font issue is fixed.
-
-**July 2 2021:** Remove extensions that are not available in Open VSX.
-
-**June 30 2021:** Combined the P4 and P5 templates into one file, added the uptime script. See the FAQ at the end of this file.
-
-**June 10 2021:** Added: `font_fix` script and alias to fix the Terminal font issue
-
-**May 10 2021:** Added `heroku_config` script to allow Heroku API key to be stored as an environment variable.
-
-**April 7 2021:** Upgraded the template for VS Code instead of Theia.
-
-**October 21 2020:** Versions of the HTMLHint, Prettier, Bootstrap4 CDN and Auto Close extensions updated. The Python extension needs to stay the same version for now.
-
-**October 08 2020:** Additional large Gitpod files (`core.mongo*` and `core.python*`) are now hidden in the Explorer, and have been added to the `.gitignore` by default.
-
-**September 22 2020:** Gitpod occasionally creates large `core.Microsoft` files. These are now hidden in the Explorer. A `.gitignore` file has been created to make sure these files will not be committed, along with other common files.
-
-**April 16 2020:** The template now automatically installs MySQL instead of relying on the Gitpod MySQL image. The message about a Python linter not being installed has been dealt with, and the set-up files are now hidden in the Gitpod file explorer.
-
-**April 13 2020:** Added the _Prettier_ code beautifier extension instead of the code formatter built-in to Gitpod.
-
-**February 2020:** The initialisation files now _do not_ auto-delete. They will remain in your project. You can safely ignore them. They just make sure that your workspace is configured correctly each time you open it. It will also prevent the Gitpod configuration popup from appearing.
-
-**December 2019:** Added Eventyret's Bootstrap 4 extension. Type `!bscdn` in a HTML file to add the Bootstrap boilerplate. Check out the <a href="https://github.com/Eventyret/vscode-bcdn" target="_blank">README.md file at the official repo</a> for more options.
-
-------
-
-## FAQ about the uptime script
-
-**Why have you added this script?**
-
-It will help us to calculate how many running workspaces there are at any one time, which greatly helps us with cost and capacity planning. It will help us decide on the future direction of our cloud-based IDE strategy.
-
-**How will this affect me?**
-
-For everyday usage of Gitpod, it doesn’t have any effect at all. The script only captures the following data:
-
-- An ID that is randomly generated each time the workspace is started.
-- The current date and time
-- The workspace status of “started” or “running”, which is sent every 5 minutes.
-
-It is not possible for us or anyone else to trace the random ID back to an individual, and no personal data is being captured. It will not slow down the workspace or affect your work.
-
-**So….?**
-
-We want to tell you this so that we are being completely transparent about the data we collect and what we do with it.
-
-**Can I opt out?**
-
-Yes, you can. Since no personally identifiable information is being captured, we'd appreciate it if you let the script run; however if you are unhappy with the idea, simply run the following commands from the terminal window after creating the workspace, and this will remove the uptime script:
-
+## Project Structure
 ```
-pkill uptime.sh
-rm .vscode/uptime.sh
+cherry-leaf-detection/
+│
+├── app_pages/            # Streamlit pages
+│   ├── home.py
+│   ├── visualization.py
+│   ├── prediction.py
+│   └── about.py
+│
+├── src/                  # Source code
+│   ├── data_management.py
+│   ├── machine_learning/
+│   │   └── predictive_analysis.py
+│   └── visualization.py
+│
+├── notebooks/           # Jupyter notebooks
+│   ├── data_collection.ipynb
+│   ├── ml_modeling.ipynb
+│   └── data_analysis.ipynb
+│
+├── requirements.txt     # Project dependencies
+├── Procfile            # Heroku deployment
+├── setup.sh            # Setup configuration
+├── runtime.txt         # Python runtime
+└── README.md
 ```
 
-**Anything more?**
+## ML Business Case
+### Objective
+Create a binary classification model to detect the presence of powdery mildew in cherry leaf images.
 
-Yes! We'd strongly encourage you to look at the source code of the `uptime.sh` file so that you know what it's doing. As future software developers, it will be great practice to see how these shell scripts work.
+### Model Output
+* Binary output: "Healthy" or "Powdery Mildew Detected"
+* Confidence level for the prediction
 
----
+### Success Metrics
+* Accuracy score > 97%
+* Precision and recall scores > 95%
+* Low false positive rate to minimize incorrect diagnoses
 
-Happy coding!
+### Training Data
+* Balanced dataset of healthy and infected cherry leaf images
+* 80-20 train-validation split
+* Data augmentation techniques applied to prevent overfitting
+
+## Dashboard Design
+### Home Page
+* Project summary and background
+* Key facts about powdery mildew in cherry leaves
+* Quick links to prediction and visualization tools
+
+### Visualization Page
+* Side-by-side comparison of healthy vs infected leaves
+* Statistical analysis of leaf characteristics
+* Visual aids to help understand infection patterns
+
+### Prediction Page
+* Image upload functionality
+* Real-time prediction results
+* Confidence scores display
+* Image preprocessing information
+
+### About Page
+* Project information
+* Dataset details
+* Model performance metrics
+* Usage instructions
+
+## Technical Details
+### Image Classification Model
+* CNN architecture optimized for leaf disease detection
+* Image preprocessing pipeline
+* Data augmentation strategy
+* Model evaluation metrics
+
+### Deployment
+* Streamlit cloud deployment
+* Version control via GitHub
+* Continuous integration setup
+
+## Future Improvements
+* Expand dataset with more diverse examples
+* Implement multi-class classification for different diseases
+* Add mobile support for field diagnosis
+* Integrate weather data for predictive analytics
