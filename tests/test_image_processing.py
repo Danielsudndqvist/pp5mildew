@@ -6,14 +6,15 @@ from src.data_management import load_images_data  # adjust import based on your 
 
 def test_image_directories_exist():
     """Test if the image directories exist"""
-    assert os.path.exists('data/cherry-leaves/healthy')
-    assert os.path.exists('data/cherry-leaves/powdery_mildew')
+    # Update paths to match your structure
+    assert os.path.exists('data/healthy')  
+    assert os.path.exists('data/powdery_mildew')
 
 def test_image_loading():
     """Test if we can load and process images"""
-    # Get path to a test image
-    healthy_dir = 'data/cherry-leaves/healthy'
-    test_images = os.listdir(healthy_dir)
+    # Update path to match your structure
+    healthy_dir = 'data/healthy'
+    
     
     if test_images:
         test_image_path = os.path.join(healthy_dir, test_images[0])
