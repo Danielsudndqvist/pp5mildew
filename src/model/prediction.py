@@ -1,49 +1,30 @@
-import json
-import os
-from datetime import datetime
+from PIL import Image
 import numpy as np
+from src.model.metrics import MetricsTracker
+import tensorflow as tf
 
-class MetricsTracker:
-    def __init__(self, metrics_file='metrics/model_metrics.json'):
-        self.metrics_file = metrics_file
-        self.metrics = self._load_metrics()
-        os.makedirs('metrics', exist_ok=True)
+metrics_tracker = MetricsTracker()
+model = tf.keras.models.load_model('models/mildew_model.h5')
 
-    def _load_metrics(self):
-        if os.path.exists(self.metrics_file):
-            with open(self.metrics_file, 'r') as f:
-                return json.load(f)
-        return {
-            'confusion_matrix': [[0, 0], [0, 0]],
-            'accuracy': 0,
-            'precision': 0,
-            'recall': 0,
-            'history': []
-        }
+def process_image(image, target_size=(224, 224)):
+    if isinstance(image, str):
+        image = Image.open(image)
+    img = image.resize(target_size)
+    img_array = np.array(img)
+    processed = img_array.astype('float32') / 255.0
+    return np.expand_dims(processed, axis=0)
 
-    def update_metrics(self, true_label, predicted_label, confidence):
-        self.metrics['confusion_matrix'][true_label][predicted_label] += 1
-        self._calculate_metrics()
-        self.metrics['history'].append({
-            'timestamp': datetime.now().isoformat(),
-            'accuracy': self.metrics['accuracy'],
-            'precision': self.metrics['precision'],
-            'recall': self.metrics['recall'],
-            'confidence': confidence
-        })
-        self._save_metrics()
-
-    def _calculate_metrics(self):
-        cm = self.metrics['confusion_matrix']
-        total = sum(sum(row) for row in cm)
-        correct = cm[0][0] + cm[1][1]
-        self.metrics['accuracy'] = correct / total if total > 0 else 0
-        self.metrics['precision'] = cm[1][1] / (cm[1][1] + cm[0][1]) if (cm[1][1] + cm[0][1]) > 0 else 0
-        self.metrics['recall'] = cm[1][1] / (cm[1][1] + cm[1][0]) if (cm[1][1] + cm[1][0]) > 0 else 0
-
-    def _save_metrics(self):
-        with open(self.metrics_file, 'w') as f:
-            json.dump(self.metrics, f, indent=4)
-
-    def get_metrics(self):
-        return self.metrics
+def predict_mildew(image):
+    processed_image = process_image(image)
+    prediction = model.predict(processed_image)[0][0]
+    predicted_label = 1 if prediction > 0.5 else 0
+    
+    # For demo purposes, assuming true label is 1 (infected)
+    # In production, you'd get this from user input or ground truth
+    true_label = 1
+    
+    metrics_tracker.update_metrics(true_label, predicted_label, prediction)
+    metrics = metrics_tracker.get_metrics()
+    
+    result = "Mildew Detected" if predicted_label == 1 else "Healthy"
+    return result, prediction, metrics
