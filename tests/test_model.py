@@ -1,15 +1,15 @@
-# tests/test_model.py
 import pytest
 from PIL import Image
 import numpy as np
 from src.model.prediction import process_image, predict_mildew
 
 def test_process_image():
-    # Create test image
     test_image = Image.new('RGB', (100, 100))
     processed = process_image(test_image)
     
-    assert processed.shape == (224, 224, 3)
+
+    assert processed.shape == (1, 224, 224, 3)
+    assert processed.dtype == np.float32
     assert np.max(processed) <= 1.0
     assert np.min(processed) >= 0.0
 
