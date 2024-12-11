@@ -2,18 +2,23 @@ import tensorflow as tf
 import os
 from src.utils.logger_config import logger
 
-MODEL_PATH = 'models/mildew_model.h5'
 
 def load_model():
-    """Load the trained model"""
+    """
+    Load the trained model.
+    
+    Returns:
+        The loaded model or None if loading fails
+    """
     try:
-        if os.path.exists(MODEL_PATH):
-            model = tf.keras.models.load_model(MODEL_PATH)
+        model_path = 'models/mildew_model.h5'
+        if os.path.exists(model_path):
+            model = tf.keras.models.load_model(model_path)
             logger.info("Model loaded successfully")
             return model
         else:
-            logger.error(f"Model file not found at {MODEL_PATH}")
-            raise FileNotFoundError(f"Model file not found at {MODEL_PATH}")
+            logger.error(f"Model file not found at {model_path}")
+            return None
     except Exception as e:
         logger.error(f"Error loading model: {str(e)}")
-        raise
+        return None

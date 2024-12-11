@@ -1,31 +1,49 @@
 import streamlit as st
-from app_pages.home import page_home_body
-from app_pages.visualization import page_visualization_body
-from app_pages.prediction import page_prediction_body
-from app_pages.about import page_about_body
+from app_pages import (
+    home,
+    prediction,
+    visualization,
+    metrics
+)
 
-def main():
-    st.set_page_config(
-        page_title="Cherry Leaf Mildew Detection",
-        page_icon="🍒",
-        layout="wide"
-    )
+
+class MildewDetectionApp:
+    """Main application class for Mildew Detection."""
     
-    # Sidebar navigation
-    st.sidebar.title("Navigation")
-    selection = st.sidebar.radio("Go to", 
-        ["Home", "Visualization", "Prediction", "About"]
-    )
-    
-    # Page content
-    if selection == "Home":
-        page_home_body()
-    elif selection == "Visualization":
-        page_visualization_body()
-    elif selection == "Prediction":
-        page_prediction_body()
-    elif selection == "About":
-        page_about_body()
+    def __init__(self):
+        """Initialize application configuration."""
+        st.set_page_config(
+            page_title="Cherry Leaf Mildew Detection",
+            layout="wide"
+        )
+        
+        self.pages = {
+            "Home": home.app,
+            "Make Prediction": prediction.app,
+            "Data Visualization": visualization.app,
+            "Model Performance": metrics.app
+        }
+
+    def run(self):
+        """Run the application."""
+        st.sidebar.title("Navigation")
+        
+        # Add project summary to sidebar
+        st.sidebar.info(
+            "This application uses machine learning to detect "
+            "powdery mildew in cherry leaves."
+        )
+        
+        # Page selection
+        page = st.sidebar.radio(
+            "Go to",
+            list(self.pages.keys())
+        )
+        
+        # Run selected page
+        self.pages[page]()
+
 
 if __name__ == "__main__":
-    main()
+    app = MildewDetectionApp()
+    app.run()

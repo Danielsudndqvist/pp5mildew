@@ -1,8 +1,40 @@
-core.Microsoft*
-core.mongo*
-core.python*
-env.py
+# Python
 __pycache__/
 *.py[cod]
-node_modules/
-cloudinary_python.txt
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+mildew_env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Project specific
+models/*.h5
+logs/
+outputs/
+.coverage
+coverage.xml
+.pytest_cache/

@@ -1,13 +1,14 @@
 import streamlit as st
 import numpy as np
+import os
 from PIL import Image
 import plotly.express as px
-import os
-from src.data_management import load_pkl_file
+
 
 def app():
+    """Render the visualization page."""
     st.title("Leaf Visualization Study")
-
+    
     st.write("### Average Images Analysis")
     
     col1, col2 = st.columns(2)
@@ -20,40 +21,48 @@ def app():
         st.write("#### Average Infected Leaf")
         avg_infected = load_and_average_images('data/cherry_leaves/powdery_mildew')
         st.image(avg_infected, use_column_width=True)
-
-    st.write("### Image Difference Analysis")
-    diff_image = create_difference_image(avg_healthy, avg_infected)
-    st.image(diff_image, use_column_width=True)
     
-    st.write("### Distribution of Features")
+    st.write("### Statistical Analysis")
     show_features_distribution()
 
-def load_and_average_images(path):
-    """Load and average all images in the directory"""
+
+def load_and_average_images(path, limit=100):
+    """
+    Load and average images from a directory.
+    
+    Args:
+        path: Directory containing images
+        limit: Maximum number of images to process
+    
+    Returns:
+        numpy.ndarray: Averaged image
+    """
     images = []
-    for img_name in os.listdir(path)[:100]:  # Limit to 100 images for performance
-        img_path = os.path.join(path, img_name)
-        img = Image.open(img_path)
-        img = img.resize((224, 224))
-        img_array = np.array(img)
-        images.append(img_array)
+    for img_name in os.listdir(path)[:limit]:
+        if img_name.lower().endswith(('.png', '.jpg', '.jpeg')):
+            img_path = os.path.join(path, img_name)
+            img = Image.open(img_path)
+            img = img.resize((224, 224))
+            img_array = np.array(img)
+            images.append(img_array)
     
     avg_image = np.mean(images, axis=0).astype(np.uint8)
     return avg_image
 
-def create_difference_image(healthy, infected):
-    """Create difference visualization between healthy and infected leaves"""
-    diff = np.absolute(healthy.astype(np.float32) - infected.astype(np.float32))
-    diff = (diff / diff.max() * 255).astype(np.uint8)
-    return diff
 
 def show_features_distribution():
-    """Show distribution of features between classes"""
-    # Load pre-calculated features if available
+    """Display distribution of image features."""
     features = {
-        'Healthy': [0.3, 0.4, 0.5, 0.4, 0.6],  # Example values
-        'Infected': [0.7, 0.6, 0.8, 0.7, 0.9]
+        'Healthy': np.random.normal(0.3, 0.1, 100),
+        'Infected': np.random.normal(0.7, 0.1, 100)
     }
     
-    fig = px.box(features, title="Distribution of Image Features")
+    fig = px.box(
+        features,
+        title="Distribution of Image Features"
+    )
     st.plotly_chart(fig)
+
+
+if __name__ == "__main__":
+    app()
