@@ -20,7 +20,16 @@ def get_model():
 
 
 def process_image(image, target_size=(224, 224)):
-    """Process image for prediction."""
+    """
+    Process image for prediction.
+    
+    Args:
+        image: PIL Image or path to image
+        target_size: Tuple of (height, width)
+        
+    Returns:
+        numpy array: Processed image ready for model
+    """
     if isinstance(image, str):
         image = Image.open(image)
     img = image.resize(target_size)
@@ -30,16 +39,24 @@ def process_image(image, target_size=(224, 224)):
 
 
 def predict_mildew(image):
-    """Predict if leaf has mildew."""
-    processed_image = process_image(image)
+    """
+    Predict if leaf has mildew.
     
+    Args:
+        image: PIL Image object
+        
+    Returns:
+        tuple: (result, confidence, metrics)
+    """
+    processed_image = process_image(image)
+
     if model is None:
         prediction = 0.7  # For testing
     else:
         prediction = model.predict(processed_image)[0][0]
-    
+
     predicted_label = 1 if prediction > 0.5 else 0
     metrics_tracker.update_metrics(1, predicted_label, prediction)
-    
+
     result = "Mildew Detected" if predicted_label == 1 else "Healthy"
     return result, prediction, metrics_tracker.get_metrics()

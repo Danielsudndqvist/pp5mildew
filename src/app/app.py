@@ -12,23 +12,23 @@ def main():
 
     # Create sidebar navigation
     st.sidebar.title("Navigation")
-    
+
     # Navigation options
     pages = {
         "Home": home.app,
         "Leaf Analysis": visualization.app,
         "Make Prediction": prediction.app
     }
-    
+
     # Add project summary to sidebar
     st.sidebar.info(
         "This application helps detect powdery mildew in cherry leaves "
         "using machine learning."
     )
-    
+
     # Navigation selection
     page = st.sidebar.radio("Go to", list(pages.keys()))
-    
+
     # Display selected page
     pages[page]()
 

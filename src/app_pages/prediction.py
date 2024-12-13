@@ -1,103 +1,85 @@
 import streamlit as st
 from PIL import Image
-import numpy as np
-from src.model.prediction import process_image, predict_mildew
+from src.model.prediction import predict_mildew
+from src.utils.validation import validate_image
 
 
 def app():
     """Render the prediction page."""
-    st.title("Leaf Disease Detection")
+    st.title("Leaf Disease Prediction")
 
-    st.info(
-        "Upload a clear image of a cherry leaf for instant analysis "
-        "of potential mildew infection."
-    )
+    st.write("Upload a cherry leaf image for mildew detection.")
 
-    # Image upload
     uploaded_file = st.file_uploader(
-        "Upload Leaf Image",
-        type=['png', 'jpg', 'jpeg'],
-        help="Upload a clear image of a single cherry leaf"
+        "Choose an image file",
+        type=['png', 'jpg', 'jpeg']
     )
 
     if uploaded_file:
-        try:
-            # Display uploaded image
-            image = Image.open(uploaded_file)
-            st.image(image, caption="Uploaded Leaf", use_column_width=True)
+        # Validate uploaded file
+        is_valid, error_message = validate_image(uploaded_file)
 
-            # Make prediction
-            if st.button("Analyze Leaf"):
-                with st.spinner("Analyzing..."):
-                    # Get prediction
-                    result, confidence, metrics = predict_mildew(image)
-                    
-                    # Display results
-                    display_results(result, confidence)
-                    
-                    # Display model performance
-                    display_metrics(metrics)
-                    
-                    # Show recommendations
-                    show_recommendations(result)
+        if not is_valid:
+            st.error(error_message)
+            return
 
-        except Exception as e:
-            st.error(f"Error processing image: {str(e)}")
+        # Display and analyze image
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Uploaded Image", use_column_width=True)
+
+        if st.button("Analyze Leaf"):
+            with st.spinner("Analyzing..."):
+                result, confidence, metrics = predict_mildew(image)
+
+                # Display results
+                display_prediction_results(result, confidence)
+
+                # Show performance metrics
+                display_metrics(metrics)
 
 
-def display_results(result, confidence):
-    """Display prediction results."""
-    st.write("### Analysis Results")
+def display_prediction_results(result, confidence):
+    """Display prediction results with appropriate styling."""
+    if result == "Mildew Detected":
+        st.error(f"🔴 {result} (Confidence: {confidence:.2%})")
+        display_recommendations(infected=True)
+    else:
+        st.success(f"✅ {result} (Confidence: {confidence:.2%})")
+        display_recommendations(infected=False)
 
-    # Create columns for results
-    col1, col2 = st.columns([1, 1])
 
-    with col1:
-        if result == "Mildew Detected":
-            st.error("🔴 Mildew Detected")
-        else:
-            st.success("✅ Healthy Leaf")
+def display_recommendations(infected):
+    """Display appropriate recommendations based on prediction."""
+    st.write("### Recommendations")
 
-    with col2:
-        st.metric("Confidence Score", f"{confidence:.1%}")
+    if infected:
+        st.write(
+            "* Isolate infected plants\n"
+            "* Apply appropriate fungicide\n"
+            "* Improve air circulation\n"
+            "* Monitor surrounding plants\n"
+            "* Regular inspection recommended"
+        )
+    else:
+        st.write(
+            "* Continue regular monitoring\n"
+            "* Maintain good ventilation\n"
+            "* Practice preventive care\n"
+            "* Keep leaves dry"
+        )
 
 
 def display_metrics(metrics):
     """Display model performance metrics."""
     st.write("### Model Performance")
-
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.metric("Accuracy", f"{metrics['accuracy']:.1%}")
+        st.metric("Accuracy", f"{metrics['accuracy']:.2%}")
     with col2:
-        st.metric("Precision", f"{metrics['precision']:.1%}")
+        st.metric("Precision", f"{metrics['precision']:.2%}")
     with col3:
-        st.metric("Recall", f"{metrics['recall']:.1%}")
-
-
-def show_recommendations(result):
-    """Show recommendations based on prediction."""
-    st.write("### Recommendations")
-
-    if result == "Mildew Detected":
-        st.warning("""
-        #### Immediate Actions Required:
-        1. **Isolate** affected plants
-        2. **Remove** heavily infected leaves
-        3. **Improve** air circulation
-        4. **Apply** appropriate fungicide
-        5. **Monitor** nearby plants daily
-        """)
-    else:
-        st.success("""
-        #### Preventive Measures:
-        1. **Maintain** good air circulation
-        2. **Monitor** regularly
-        3. **Keep** leaves dry
-        4. **Space** plants appropriately
-        5. **Practice** good garden hygiene
-        """)
+        st.metric("Recall", f"{metrics['recall']:.2%}")
 
 
 if __name__ == "__main__":

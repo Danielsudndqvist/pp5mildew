@@ -26,7 +26,14 @@ class MetricsTracker:
         }
 
     def update_metrics(self, true_label, predicted_label, confidence):
-        """Update metrics with new prediction."""
+        """
+        Update metrics with new prediction.
+        
+        Args:
+            true_label: Actual class label
+            predicted_label: Predicted class label
+            confidence: Model confidence score
+        """
         self.metrics['confusion_matrix'][true_label][predicted_label] += 1
         self._calculate_metrics()
         self.metrics['history'].append({
@@ -44,14 +51,14 @@ class MetricsTracker:
         total = sum(sum(row) for row in cm)
         correct = cm[0][0] + cm[1][1]
         self.metrics['accuracy'] = correct / total if total > 0 else 0
-        self.metrics['precision'] = (
-            cm[1][1] / (cm[1][1] + cm[0][1])
-            if (cm[1][1] + cm[0][1]) > 0 else 0
-        )
-        self.metrics['recall'] = (
-            cm[1][1] / (cm[1][1] + cm[1][0])
-            if (cm[1][1] + cm[1][0]) > 0 else 0
-        )
+        
+        # Calculate precision
+        denom = cm[1][1] + cm[0][1]
+        self.metrics['precision'] = cm[1][1] / denom if denom > 0 else 0
+        
+        # Calculate recall
+        denom = cm[1][1] + cm[1][0]
+        self.metrics['recall'] = cm[1][1] / denom if denom > 0 else 0
 
     def _save_metrics(self):
         """Save metrics to file."""

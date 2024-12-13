@@ -8,13 +8,13 @@ def app():
     # Project Overview
     st.write("### Project Overview")
     st.info(
-        "This app helps detect powdery mildew infection in cherry leaves using "
-        "machine learning techniques."
+        "This app helps detect powdery mildew infection in cherry leaves "
+        "using machine learning techniques."
     )
 
     # Project Details
     col1, col2 = st.columns(2)
-    
+
     with col1:
         st.write("### Dataset")
         st.write("""
