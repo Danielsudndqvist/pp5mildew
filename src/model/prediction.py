@@ -1,6 +1,7 @@
 from PIL import Image
 import numpy as np
 from src.model.metrics import MetricsTracker
+from src.model.model_loader import load_model
 
 
 metrics_tracker = MetricsTracker()

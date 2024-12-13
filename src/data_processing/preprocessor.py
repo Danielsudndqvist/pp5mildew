@@ -1,12 +1,20 @@
-import numpy as np
+from PIL import Image
 
-def preprocess_data(images, labels):
-    images = images.astype('float32') / 255.0
-    train_size = int(0.8 * len(images))
+
+def preprocess_image(image, target_size=(224, 224)):
+    """
+    Preprocess a single image for model input.
     
-    train_images = images[:train_size]
-    train_labels = labels[:train_size]
-    val_images = images[train_size:]
-    val_labels = labels[train_size:]
+    Args:
+        image: PIL Image or path to image
+        target_size: Desired dimensions (height, width)
     
-    return (train_images, train_labels), (val_images, val_labels)
+    Returns:
+        Preprocessed image as numpy array
+    """
+    if isinstance(image, str):
+        image = Image.open(image)
+    
+    # Resize image
+    image = image.resize(target_size)
+    return image
