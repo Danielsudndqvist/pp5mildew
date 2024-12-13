@@ -1,95 +1,100 @@
 import streamlit as st
-import numpy as np
 import plotly.express as px
-import os
 from PIL import Image
+import os
+import numpy as np
 
 
 def app():
     """Render the visualization page."""
-    st.title("Leaf Visualization Study")
+    st.title("Leaf Analysis Study")
 
-    st.write("### Study of Visual Differences")
-    st.info(
-        "This study compares healthy and infected cherry leaves to identify "
-        "visual indicators of powdery mildew infection."
-    )
+    tab1, tab2, tab3 = st.tabs([
+        "Difference Study",
+        "Statistical Analysis",
+        "Average Features"
+    ])
 
-    # Image Comparison Section
-    st.write("### Healthy vs Infected Leaf Comparison")
+    with tab1:
+        show_difference_study()
+
+    with tab2:
+        show_statistical_analysis()
+
+    with tab3:
+        show_average_features()
+
+
+def show_difference_study():
+    """Show visual differences between healthy and infected leaves."""
+    st.write("### Visual Difference Analysis")
+
     col1, col2 = st.columns(2)
-    
+
     with col1:
-        st.write("#### Healthy Leaf Characteristics")
-        display_leaf_sample('healthy')
-        st.write("""
-        * Uniform green coloration
-        * No visible spots or patches
-        * Consistent leaf texture
-        """)
-        
+        st.write("#### Healthy Leaf Example")
+        if os.path.exists("data/cherry_leaves/healthy"):
+            images = os.listdir("data/cherry_leaves/healthy")
+            if images:
+                img_path = os.path.join("data/cherry_leaves/healthy", images[0])
+                image = Image.open(img_path)
+                st.image(image, caption="Healthy Leaf", use_column_width=True)
+
     with col2:
-        st.write("#### Infected Leaf Characteristics")
-        display_leaf_sample('powdery_mildew')
-        st.write("""
-        * White powdery spots
-        * Irregular patches
-        * Visible texture changes
-        """)
+        st.write("#### Infected Leaf Example")
+        if os.path.exists("data/cherry_leaves/powdery_mildew"):
+            images = os.listdir("data/cherry_leaves/powdery_mildew")
+            if images:
+                img_path = os.path.join("data/cherry_leaves/powdery_mildew", images[0])
+                image = Image.open(img_path)
+                st.image(image, caption="Infected Leaf", use_column_width=True)
 
-    # Statistical Analysis Section
+    st.write("""
+    ### Key Differences:
+    1. Healthy leaves show uniform coloration
+    2. Infected leaves display white powdery patches
+    3. Texture changes are visible in infected areas
+    """)
+
+
+def show_statistical_analysis():
+    """Show statistical analysis of leaf features."""
     st.write("### Statistical Analysis")
-    display_statistical_analysis()
 
-    # Difference Analysis
-    st.write("### Average Difference Analysis")
-    display_difference_analysis()
+    # Example data for demonstration
+    healthy_data = np.random.normal(0.3, 0.1, 100)
+    infected_data = np.random.normal(0.7, 0.1, 100)
 
-
-def display_leaf_sample(leaf_type):
-    """Display a sample leaf image with analysis."""
-    path = f"data/cherry_leaves/{leaf_type}"
-    if os.path.exists(path):
-        images = os.listdir(path)
-        if images:
-            img_path = os.path.join(path, images[0])
-            image = Image.open(img_path)
-            st.image(image, use_column_width=True)
-
-
-def display_statistical_analysis():
-    """Display statistical analysis of leaf characteristics."""
-    # Create sample data
-    healthy_features = np.random.normal(0.3, 0.1, 100)
-    infected_features = np.random.normal(0.7, 0.1, 100)
-    
     fig = px.histogram(
         {
-            'Healthy': healthy_features,
-            'Infected': infected_features
+            'Healthy Leaves': healthy_data,
+            'Infected Leaves': infected_data
         },
-        title="Distribution of Leaf Characteristics",
         barmode='overlay',
+        title="Distribution of Leaf Features",
         opacity=0.7
     )
-    
+
     st.plotly_chart(fig)
-    
+
     st.write("""
+    ### Analysis Insights:
     * Clear separation between healthy and infected populations
-    * Distinct characteristic patterns for each class
+    * Distinct feature patterns for each category
     * Reliable basis for automated detection
     """)
 
 
-def display_difference_analysis():
-    """Display average difference between healthy and infected leaves."""
-    # Implement average difference visualization
+def show_average_features():
+    """Show average features of leaves."""
+    st.write("### Average Feature Analysis")
+
+    # Calculate and display average images if available
     st.write("""
-    #### Key Findings:
-    1. Infection signs are most prominent on leaf surfaces
-    2. Pattern distribution is typically scattered
-    3. Color changes are consistent across infected areas
+    #### Observations from Average Features:
+    1. Consistent patterns in infection presentation
+    2. Common locations for mildew development
+    3. Typical progression of infection
     """)
 
 

@@ -1,111 +1,132 @@
 # Cherry Leaf Mildew Detection
 
-## Business Understanding
-### Dataset Content
-* The dataset contains images of cherry leaves divided into two classes:
-  * Healthy cherry leaves
-  * Cherry leaves infected with powdery mildew
-* The dataset was sourced from Kaggle and contains 2104 images of cherry leaves
-  * Training set: approximately 1682 images (80% of the dataset)
-  * Validation set: approximately 422 images (20% of the dataset)
+## Project Overview
+Detection of powdery mildew in cherry leaves using machine learning.
 
-### Business Requirements
-1. The client is interested in conducting a study to visually differentiate between healthy and powdery mildew infected cherry leaves.
-   * Success Criteria: Create a visual analysis tool that highlights the differences between healthy and infected leaves
-   
-2. The client wants to predict if a cherry leaf is healthy or contains powdery mildew.
-   * Success Criteria: Create a ML model that accurately predicts the condition of a cherry leaf with at least 97% accuracy
+## Business Requirements
+As defined by the client's needs:
 
-### Hypotheses and Validation
-* Hypothesis 1: Powdery mildew creates visible white spots or patches on cherry leaves
-  * Validation: Image visualization study comparing healthy and infected leaves
-  
-* Hypothesis 2: Machine learning can detect subtle patterns that differentiate healthy from infected leaves
-  * Validation: Development and evaluation of an image classification model
+1. As a farmer
+   I want to visually differentiate healthy cherry leaves from infected ones
+   So that I can quickly identify potential mildew infections in my orchards
 
-## Project Structure
-```
-cherry-leaf-detection/
-│
-├── app_pages/            # Streamlit pages
-│   ├── home.py
-│   ├── visualization.py
-│   ├── prediction.py
-│   └── about.py
-│
-├── src/                  # Source code
-│   ├── data_management.py
-│   ├── machine_learning/
-│   │   └── predictive_analysis.py
-│   └── visualization.py
-│
-├── notebooks/           # Jupyter notebooks
-│   ├── data_collection.ipynb
-│   ├── ml_modeling.ipynb
-│   └── data_analysis.ipynb
-│
-├── requirements.txt     # Project dependencies
-├── Procfile            # Heroku deployment
-├── setup.sh            # Setup configuration
-├── runtime.txt         # Python runtime
-└── README.md
-```
+2. As a farm manager
+   I want to receive predictions about leaf health from leaf images
+   So that I can make automated assessments of tree health status
+
+## Rationale to Map Business Requirements to Data Science Tasks
+
+* Business Requirement 1: Visual Differentiation Study
+  * Average image study to identify typical infection patterns
+  * Image montage to understand variability in healthy/infected leaves
+  * Side-by-side comparison tool for comparative analysis
+  * Statistical analysis of image characteristics
+
+* Business Requirement 2: Predictive Classification
+  * Binary classification model (healthy vs infected)
+  * Image preprocessing pipeline for standardization
+  * Model evaluation metrics focused on high accuracy
+  * User-friendly interface for uploading and analyzing new images
+
+## Dataset
+* Source: Kaggle Cherry Leaves Dataset
+* Contents: 2104 images total
+  * Healthy Leaves: 1052 images
+  * Infected Leaves: 1052 images
+* Train-Test Split:
+  * Training: 1682 images (80%)
+  * Validation: 422 images (20%)
 
 ## ML Business Case
-### Objective
-Create a binary classification model to detect the presence of powdery mildew in cherry leaf images.
-
-### Model Output
-* Binary output: "Healthy" or "Powdery Mildew Detected"
-* Confidence level for the prediction
-
-### Success Metrics
-* Accuracy score > 97%
-* Precision and recall scores > 95%
-* Low false positive rate to minimize incorrect diagnoses
-
-### Training Data
-* Balanced dataset of healthy and infected cherry leaf images
-* 80-20 train-validation split
-* Data augmentation techniques applied to prevent overfitting
+* Problem Type: Binary Classification
+* Success Metrics:
+  * Accuracy > 97%
+  * Precision > 95%
+  * Recall > 95%
+* Output:
+  * Label: "Healthy" or "Powdery Mildew Detected"
+  * Probability score
+* Model Features:
+  * Processed leaf images (standardized size and format)
+  * Image augmentation for training robustness
+* Training Data:
+  * Balanced dataset of healthy and infected leaves
+  * Augmentation techniques:
+    * Rotation
+    * Horizontal flip
+    * Brightness adjustment
 
 ## Dashboard Design
-### Home Page
-* Project summary and background
-* Key facts about powdery mildew in cherry leaves
-* Quick links to prediction and visualization tools
 
-### Visualization Page
-* Side-by-side comparison of healthy vs infected leaves
-* Statistical analysis of leaf characteristics
-* Visual aids to help understand infection patterns
+### Page 1: Project Summary
+* Project overview and background
+* Powdery mildew information
+* Project dataset information
+* Link to project repository
+* Quick navigation to tools
 
-### Prediction Page
-* Image upload functionality
-* Real-time prediction results
-* Confidence scores display
-* Image preprocessing information
+### Page 2: Leaf Visualizer
+* **Purpose**: Answers Business Requirement 1
+* **Contents**:
+  * Average image comparison (healthy vs infected)
+  * Image variability analysis
+  * Difference between average healthy and infected leaves
+  * Image montage for both classes
+  * Statistical analysis of image features
+* **User Actions**:
+  * Toggle between different visualization types
+  * Select number of images for montage
+* **Interpretations**: Clear text explanations for each visualization
 
-### About Page
-* Project information
-* Dataset details
-* Model performance metrics
-* Usage instructions
+### Page 3: Mildew Detector
+* **Purpose**: Answers Business Requirement 2
+* **Contents**:
+  * Image upload interface
+  * Prediction results display
+  * Confidence score visualization
+  * Model performance metrics
+* **User Actions**:
+  * Upload new images
+  * Batch process multiple images
+  * Download prediction reports
+* **Interpretations**: 
+  * Clear prediction results
+  * Reliability indicators
+  * Usage instructions
 
-## Technical Details
-### Image Classification Model
-* CNN architecture optimized for leaf disease detection
-* Image preprocessing pipeline
-* Data augmentation strategy
-* Model evaluation metrics
+### Page 4: Project Hypotheses and Validation
+* Hypothesis 1: Visible Patterns
+  * Null: No visible differences exist between healthy and infected leaves
+  * Alternative: Infected leaves show distinct visual patterns
+  * Validation: Image analysis results
+* Hypothesis 2: ML Detection
+  * Null: ML cannot reliably detect mildew infection
+  * Alternative: ML can detect mildew with >97% accuracy
+  * Validation: Model performance metrics
 
-### Deployment
-* Streamlit cloud deployment
-* Version control via GitHub
-* Continuous integration setup
+## Technical Requirements
+* Python 3.8+
+* Key Dependencies:
+  * streamlit
+  * tensorflow
+  * opencv-python
+  * numpy
+  * pandas
 
-## Future Improvements
-* Expand dataset with more diverse examples
-* Implement multi-class classification for different diseases
-* Add mobile support for field diagnosis
-* Integrate weather data for predictive analytics
+## Development Workflow
+1. Set up development environment
+2. Data collection and preparation
+3. EDA and visualization
+4. Model development and training
+5. Dashboard implementation
+6. Testing and validation
+7. Deployment
+
+## Deployment
+* Platform: Heroku
+* URL: [Your-App-URL]
+* Deployment Files:
+  * Procfile
+  * requirements.txt
+  * runtime.txt
+  * setup.sh

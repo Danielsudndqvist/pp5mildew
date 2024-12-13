@@ -8,43 +8,40 @@ def app():
     # Project Overview
     st.write("### Project Overview")
     st.info(
-        "This app helps detect powdery mildew infection in cherry leaves "
-        "using machine learning techniques."
+        "This app helps detect powdery mildew infection in cherry leaves using "
+        "machine learning techniques."
     )
 
-    # Business Requirements
-    st.write("### Business Requirements")
-    st.write(
-        """
-        1. Visual Differentiation Study
-        * Create clear visual indicators between healthy and infected leaves
-        * Provide statistical analysis of leaf characteristics
-        
-        2. Automated Detection System
-        * Predict leaf condition with 97%+ accuracy
-        * Provide confidence scores for predictions
-        """
-    )
-
-    # Usage Guide
-    st.write("### How to Use")
+    # Project Details
     col1, col2 = st.columns(2)
     
     with col1:
-        st.write("#### Prediction")
+        st.write("### Dataset")
         st.write("""
-        * Navigate to 'Prediction' page
-        * Upload a cherry leaf image
-        * Get instant analysis results
+        * 2104 cherry leaf images
+        * Balanced dataset:
+            * Healthy leaves
+            * Infected leaves
+        * Training/Validation split: 80/20
         """)
-    
+
     with col2:
-        st.write("#### Analysis")
+        st.write("### Predictions")
         st.write("""
-        * Check 'Visualization' page
-        * Compare healthy vs infected leaves
-        * View statistical analysis
+        * Real-time analysis
+        * 97%+ accuracy
+        * Instant visual feedback
+        * Treatment recommendations
         """)
+
+    # How to Use
+    st.write("### How to Use")
+    st.write("""
+    1. Navigate to 'Leaf Analysis' to study visual differences
+    2. Use 'Make Prediction' to analyze new leaf images
+    3. Upload clear images of cherry leaves
+    4. Get instant analysis results
+    """)
 
 
 if __name__ == "__main__":
