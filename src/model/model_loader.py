@@ -26,36 +26,3 @@ def load_model(model_path='models/mildew_model.h5'):
     except Exception as e:
         logger.error(f"Error loading model: {str(e)}")
         return None
-
-
-# tests/test_app_pages.py
-import pytest
-import streamlit as st
-from app_pages import home, visualization, prediction
-
-
-def test_home_page():
-    """Test home page renders without errors."""
-    try:
-        home.app()
-        assert True
-    except Exception as e:
-        pytest.fail(f"Home page failed to render: {str(e)}")
-
-
-def test_visualization_page():
-    """Test visualization page renders without errors."""
-    try:
-        visualization.app()
-        assert True
-    except Exception as e:
-        pytest.fail(f"Visualization page failed to render: {str(e)}")
-
-
-def test_prediction_page():
-    """Test prediction page renders without errors."""
-    try:
-        prediction.app()
-        assert True
-    except Exception as e:
-        pytest.fail(f"Prediction page failed to render: {str(e)}")
