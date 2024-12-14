@@ -6,7 +6,7 @@
         ],
         [
             0,
-            3
+            5
         ]
     ],
     "accuracy": 1.0,
@@ -29,6 +29,20 @@
         },
         {
             "timestamp": "2024-12-11T17:07:33.591843",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.7
+        },
+        {
+            "timestamp": "2024-12-14T08:03:24.712117",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.7
+        },
+        {
+            "timestamp": "2024-12-14T08:05:08.189875",
             "accuracy": 1.0,
             "precision": 1.0,
             "recall": 1.0,
