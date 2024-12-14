@@ -6,7 +6,7 @@
         ],
         [
             0,
-            7
+            25
         ]
     ],
     "accuracy": 1.0,
@@ -57,6 +57,132 @@
         },
         {
             "timestamp": "2024-12-14T08:08:03.193893",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.7
+        },
+        {
+            "timestamp": "2024-12-14T08:20:49.996012",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-14T08:20:49.998152",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.7
+        },
+        {
+            "timestamp": "2024-12-14T08:23:12.615163",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-14T08:23:12.617300",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.7
+        },
+        {
+            "timestamp": "2024-12-14T08:24:44.934411",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-14T08:24:44.936478",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.7
+        },
+        {
+            "timestamp": "2024-12-14T08:26:52.908154",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-14T08:26:52.910212",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.7
+        },
+        {
+            "timestamp": "2024-12-14T08:29:26.337999",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-14T08:29:26.340037",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.7
+        },
+        {
+            "timestamp": "2024-12-14T08:35:04.523700",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-14T08:35:04.525875",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.7
+        },
+        {
+            "timestamp": "2024-12-14T08:37:40.785495",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-14T08:37:40.787722",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.7
+        },
+        {
+            "timestamp": "2024-12-14T08:39:06.563194",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-14T08:39:06.565257",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.7
+        },
+        {
+            "timestamp": "2024-12-14T08:40:26.732830",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-14T08:40:26.735782",
             "accuracy": 1.0,
             "precision": 1.0,
             "recall": 1.0,
