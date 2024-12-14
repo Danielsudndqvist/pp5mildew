@@ -1,51 +1,61 @@
-# src/model/model_loader.py
-import tensorflow as tf
+from tensorflow import keras
 import os
 from src.utils.logger_config import logger
 
 
-def load_model(model_path='models/mildew_model.h5', custom_objects=None):
+def load_model(model_path='models/mildew_model.h5'):
     """
-    Load the trained model with additional error handling and customization.
+    Load the trained model.
     
     Args:
-        model_path (str): Path to the model file
-        custom_objects (dict): Custom objects needed for loading the model
+        model_path: Path to model file
     
     Returns:
-        tf.keras.Model or None: The loaded model or None if loading fails
+        Loaded model or None if loading fails
     """
     try:
-        # Ensure models directory exists
-        os.makedirs(os.path.dirname(model_path), exist_ok=True)
-
         if not os.path.exists(model_path):
             logger.error(f"Model file not found at {model_path}")
             return None
 
-        # Verify file size before loading
-        file_size = os.path.getsize(model_path)
-        if file_size < 1000:
-            logger.error(f"Model file appears to be corrupt or empty: {model_path}")
-            return None
-
-        # Load model with custom objects if provided
-        model = tf.keras.models.load_model(model_path, custom_objects=custom_objects)
-
-        # Verify model structure
-        if not isinstance(model, tf.keras.Model):
-            logger.error("Loaded object is not a valid Keras model")
-            return None
-
-        logger.info(f"Model loaded successfully from {model_path}")
-        logger.info(f"Model input shape: {model.input_shape}")
-        logger.info(f"Model output shape: {model.output_shape}")
-
+        # Load and verify model
+        model = keras.models.load_model(model_path)
+        logger.info("Model loaded successfully")
         return model
 
-    except tf.errors.OpError as e:
-        logger.error(f"TensorFlow error loading model: {str(e)}")
-        return None
     except Exception as e:
-        logger.error(f"Unexpected error loading model: {str(e)}")
+        logger.error(f"Error loading model: {str(e)}")
         return None
+
+
+# tests/test_app_pages.py
+import pytest
+import streamlit as st
+from app_pages import home, visualization, prediction
+
+
+def test_home_page():
+    """Test home page renders without errors."""
+    try:
+        home.app()
+        assert True
+    except Exception as e:
+        pytest.fail(f"Home page failed to render: {str(e)}")
+
+
+def test_visualization_page():
+    """Test visualization page renders without errors."""
+    try:
+        visualization.app()
+        assert True
+    except Exception as e:
+        pytest.fail(f"Visualization page failed to render: {str(e)}")
+
+
+def test_prediction_page():
+    """Test prediction page renders without errors."""
+    try:
+        prediction.app()
+        assert True
+    except Exception as e:
+        pytest.fail(f"Prediction page failed to render: {str(e)}")

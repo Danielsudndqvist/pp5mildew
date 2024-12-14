@@ -1,5 +1,4 @@
 import json
-import os
 from datetime import datetime
 
 
@@ -10,30 +9,23 @@ class MetricsTracker:
         """Initialize metrics tracker."""
         self.metrics_file = metrics_file
         self.metrics = self._load_metrics()
-        os.makedirs('metrics', exist_ok=True)
 
     def _load_metrics(self):
         """Load metrics from file or initialize new metrics."""
-        if os.path.exists(self.metrics_file):
+        try:
             with open(self.metrics_file, 'r') as f:
                 return json.load(f)
-        return {
-            'confusion_matrix': [[0, 0], [0, 0]],
-            'accuracy': 0,
-            'precision': 0,
-            'recall': 0,
-            'history': []
-        }
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {
+                'confusion_matrix': [[0, 0], [0, 0]],
+                'accuracy': 0,
+                'precision': 0,
+                'recall': 0,
+                'history': []
+            }
 
     def update_metrics(self, true_label, predicted_label, confidence):
-        """
-        Update metrics with new prediction.
-        
-        Args:
-            true_label: Actual class label
-            predicted_label: Predicted class label
-            confidence: Model confidence score
-        """
+        """Update metrics with new prediction."""
         self.metrics['confusion_matrix'][true_label][predicted_label] += 1
         self._calculate_metrics()
         self.metrics['history'].append({

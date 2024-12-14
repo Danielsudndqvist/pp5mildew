@@ -1,20 +1,15 @@
+import cv2
+import numpy as np
 from PIL import Image
 
 
-def preprocess_image(image, target_size=(224, 224)):
-    """
-    Preprocess a single image for model input.
-    
-    Args:
-        image: PIL Image or path to image
-        target_size: Desired dimensions (height, width)
-    
-    Returns:
-        Preprocessed image as numpy array
-    """
-    if isinstance(image, str):
-        image = Image.open(image)
-    
+def preprocess_image(image: Image.Image, target_size=(224, 224)) -> np.ndarray:
+    """Preprocess image for model input."""
     # Resize image
-    image = image.resize(target_size)
-    return image
+    img = image.resize(target_size)
+    
+    # Convert to array and normalize
+    img_array = np.array(img)
+    processed = img_array.astype('float32') / 255.0
+    
+    return processed
