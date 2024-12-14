@@ -1,132 +1,120 @@
 # Cherry Leaf Mildew Detection
 
-## Project Overview
-Detection of powdery mildew in cherry leaves using machine learning.
+## Business Understanding
 
-## Business Requirements
-As defined by the client's needs:
+### Dataset Content
+* The dataset contains images of cherry leaves divided into two classes:
+   * Healthy cherry leaves
+   * Cherry leaves infected with powdery mildew
+* The dataset was sourced from Kaggle and contains 2104 images of cherry leaves
+   * Training set: approximately 1682 images (80% of the dataset)
+   * Validation set: approximately 422 images (20% of the dataset)
 
+### Business Requirements
+1. The client is interested in conducting a study to visually differentiate between healthy and powdery mildew infected cherry leaves.
+   * Success Criteria: Create a visual analysis tool that highlights the differences between healthy and infected leaves
+2. The client wants to predict if a cherry leaf is healthy or contains powdery mildew.
+   * Success Criteria: Create a ML model that accurately predicts the condition of a cherry leaf with at least 97% accuracy
+
+### User Stories
 1. As a farmer
    I want to visually differentiate healthy cherry leaves from infected ones
-   So that I can quickly identify potential mildew infections in my orchards
+   So that I can identify infected trees early and prevent disease spread
 
 2. As a farm manager
    I want to receive predictions about leaf health from leaf images
-   So that I can make automated assessments of tree health status
+   So that I can make quick decisions about treatment and crop management
 
-## Rationale to Map Business Requirements to Data Science Tasks
+3. As an agricultural technician
+   I want to understand the visual patterns of mildew infection
+   So that I can train field workers on early detection
 
-* Business Requirement 1: Visual Differentiation Study
-  * Average image study to identify typical infection patterns
-  * Image montage to understand variability in healthy/infected leaves
-  * Side-by-side comparison tool for comparative analysis
-  * Statistical analysis of image characteristics
+4. As a quality control specialist
+   I want to batch process multiple leaf images
+   So that I can efficiently screen large numbers of samples
 
-* Business Requirement 2: Predictive Classification
-  * Binary classification model (healthy vs infected)
-  * Image preprocessing pipeline for standardization
-  * Model evaluation metrics focused on high accuracy
-  * User-friendly interface for uploading and analyzing new images
+### Rationale to Map Business Requirements to ML Tasks
 
-## Dataset
-* Source: Kaggle Cherry Leaves Dataset
-* Contents: 2104 images total
-  * Healthy Leaves: 1052 images
-  * Infected Leaves: 1052 images
-* Train-Test Split:
-  * Training: 1682 images (80%)
-  * Validation: 422 images (20%)
+1. Visual Difference Analysis
+   * Purpose: Enable clear identification of infection patterns
+   * Implementation: 
+     - Average image comparison shows typical infection characteristics
+     - Difference highlighting reveals key distinguishing features
+     - Image montage provides multiple examples for pattern recognition
+   * Business Value:
+     - Helps train staff in visual inspection
+     - Enables early detection of infection
+     - Supports quality control processes
 
-## ML Business Case
-* Problem Type: Binary Classification
-* Success Metrics:
-  * Accuracy > 97%
-  * Precision > 95%
-  * Recall > 95%
-* Output:
-  * Label: "Healthy" or "Powdery Mildew Detected"
-  * Probability score
-* Model Features:
-  * Processed leaf images (standardized size and format)
-  * Image augmentation for training robustness
-* Training Data:
-  * Balanced dataset of healthy and infected leaves
-  * Augmentation techniques:
-    * Rotation
-    * Horizontal flip
-    * Brightness adjustment
+2. Automated Detection System
+   * Purpose: Provide quick, accurate leaf health assessment
+   * Implementation:
+     - CNN-based binary classification
+     - High accuracy model (>97%)
+     - Confidence score for predictions
+   * Business Value:
+     - Reduces inspection time
+     - Ensures consistent assessment
+     - Enables large-scale screening
 
 ## Dashboard Design
 
 ### Page 1: Project Summary
-* Project overview and background
-* Powdery mildew information
-* Project dataset information
-* Link to project repository
-* Quick navigation to tools
+* Purpose: Provide project overview and context
+* Contents:
+   * Brief project description
+   * Dataset information
+   * Business requirements
+   * Quick start guide
+* Business Requirement Mapping: Provides context for both requirements
 
 ### Page 2: Leaf Visualizer
-* **Purpose**: Answers Business Requirement 1
-* **Contents**:
-  * Average image comparison (healthy vs infected)
-  * Image variability analysis
-  * Difference between average healthy and infected leaves
-  * Image montage for both classes
-  * Statistical analysis of image features
-* **User Actions**:
-  * Toggle between different visualization types
-  * Select number of images for montage
-* **Interpretations**: Clear text explanations for each visualization
+* Purpose: Address Business Requirement 1
+* Contents:
+   * Side-by-side comparison of healthy vs infected leaves
+   * Average image analysis
+   * Difference highlight visualization
+   * Statistical analysis of features
+* Interpretation:
+   * Clear explanation of visual patterns
+   * Highlight of key differences
+   * Guidance on identifying infection
 
 ### Page 3: Mildew Detector
-* **Purpose**: Answers Business Requirement 2
-* **Contents**:
-  * Image upload interface
-  * Prediction results display
-  * Confidence score visualization
-  * Model performance metrics
-* **User Actions**:
-  * Upload new images
-  * Batch process multiple images
-  * Download prediction reports
-* **Interpretations**: 
-  * Clear prediction results
-  * Reliability indicators
-  * Usage instructions
+* Purpose: Address Business Requirement 2
+* Contents:
+   * Image upload interface
+   * Prediction results with confidence scores
+   * Batch processing capability
+   * Model performance metrics
+* Interpretation:
+   * Clear prediction results
+   * Confidence level explanation
+   * Model performance context
 
-### Page 4: Project Hypotheses and Validation
-* Hypothesis 1: Visible Patterns
-  * Null: No visible differences exist between healthy and infected leaves
-  * Alternative: Infected leaves show distinct visual patterns
-  * Validation: Image analysis results
-* Hypothesis 2: ML Detection
-  * Null: ML cannot reliably detect mildew infection
-  * Alternative: ML can detect mildew with >97% accuracy
-  * Validation: Model performance metrics
+## ML Business Case
+* Type: Binary Classification
+* Objective: Predict whether a cherry leaf is healthy or infected with powdery mildew
+* Success Metrics:
+   * Accuracy > 97%
+   * Precision > 95%
+   * Recall > 95%
+* Model Output:
+   * Label: "Healthy" or "Powdery Mildew Detected"
+   * Probability score
+* Training Data:
+   * 2104 images split 80/20
+   * Balanced classes
+   * Data augmentation applied
 
-## Technical Requirements
-* Python 3.8+
-* Key Dependencies:
-  * streamlit
-  * tensorflow
-  * opencv-python
-  * numpy
-  * pandas
+## Hypotheses and Validation
+* Hypothesis 1: Powdery mildew creates visible white spots or patches on cherry leaves
+   * Validation: Image visualization study comparing healthy and infected leaves
+* Hypothesis 2: Machine learning can detect subtle patterns that differentiate healthy from infected leaves
+   * Validation: Development and evaluation of an image classification model
 
-## Development Workflow
-1. Set up development environment
-2. Data collection and preparation
-3. EDA and visualization
-4. Model development and training
-5. Dashboard implementation
-6. Testing and validation
-7. Deployment
-
-## Deployment
-* Platform: Heroku
-* URL: [Your-App-URL]
-* Deployment Files:
-  * Procfile
-  * requirements.txt
-  * runtime.txt
-  * setup.sh
+## Technical Details
+* Platform: Streamlit
+* Model: CNN with transfer learning
+* Deployment: Heroku
+* Libraries: TensorFlow, OpenCV, Streamlit
