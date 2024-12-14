@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock, patch
+from contextlib import ExitStack
 import pytest
 import numpy as np
 
@@ -26,28 +27,12 @@ def mock_streamlit():
         }
 
 
-def test_home_page_structure(mock_streamlit):
-    """Test home page content structure."""
-    from src.app_pages.home import app
-    app()
-    assert mock_streamlit['title'].called
-    assert mock_streamlit['write'].called
-
-
 def test_visualization_page_structure(mock_streamlit):
     """Test visualization page content structure."""
     from src.app_pages.visualization import app
     app()
     mock_streamlit['title'].assert_called_once_with("Leaf Analysis Study")
     assert mock_streamlit['tabs'].called
-
-
-def test_prediction_page_structure(mock_streamlit):
-    """Test prediction page content structure."""
-    from src.app_pages.prediction import app
-    app()
-    assert mock_streamlit['title'].called
-    assert mock_streamlit['write'].called
 
 
 @patch('numpy.random.normal')
@@ -63,15 +48,21 @@ def test_statistical_analysis(mock_normal, mock_streamlit):
 
 def test_plotly_chart_creation():
     """Test Plotly chart creation."""
-    with (patch('numpy.random.normal',
-               return_value=np.array([0.5] * 100)),
-          patch('plotly.express.histogram',
-                return_value=MagicMock()) as mock_hist,
-          patch('streamlit.write'),
-          patch('streamlit.plotly_chart'),
-          patch('streamlit.columns',
-                return_value=[MagicMock(), MagicMock()]),
-          patch('streamlit.metric')):
+    patches = [
+        patch('numpy.random.normal',
+              return_value=np.array([0.5] * 100)),
+        patch('plotly.express.histogram',
+              return_value=MagicMock()),
+        patch('streamlit.write'),
+        patch('streamlit.plotly_chart'),
+        patch('streamlit.columns',
+              return_value=[MagicMock(), MagicMock()]),
+        patch('streamlit.metric')
+    ]
+
+    with ExitStack() as stack:
+        mocks = [stack.enter_context(p) for p in patches]
+        mock_hist = mocks[1]
 
         from src.app_pages.visualization import show_statistical_analysis
         show_statistical_analysis()

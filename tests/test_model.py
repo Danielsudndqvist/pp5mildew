@@ -1,28 +1,27 @@
 import pytest
+from unittest.mock import MagicMock, patch
 import numpy as np
 from PIL import Image
-from unittest.mock import MagicMock
-
-
-@pytest.fixture
-def sample_image():
-    """Create a sample image for testing."""
-    return Image.new('RGB', (224, 224), color='red')
 
 
 @pytest.fixture
 def mock_model():
-    """Create a mock model for testing."""
+    """Create mock model."""
     model = MagicMock()
     model.predict.return_value = np.array([[0.8]])
     return model
 
 
-def test_process_image(sample_image):
+@pytest.fixture
+def test_image():
+    """Create test image."""
+    return Image.new('RGB', (224, 224), color='white')
+
+
+def test_process_image(test_image):
     """Test image processing function."""
     from src.model.prediction import process_image
-    
-    processed = process_image(sample_image)
+    processed = process_image(test_image)
     assert isinstance(processed, np.ndarray)
     assert processed.shape == (1, 224, 224, 3)
     assert processed.dtype == np.float32
@@ -30,37 +29,23 @@ def test_process_image(sample_image):
     assert np.min(processed) >= 0.0
 
 
-def test_predict_mildew(sample_image, mock_model, monkeypatch):
+def test_predict_mildew(test_image, mock_model):
     """Test mildew prediction function."""
     from src.model.prediction import predict_mildew
-    import src.model.prediction as prediction_module
-    
-    # Mock the model
-    monkeypatch.setattr(prediction_module, "model", mock_model)
-    
-    # Test prediction
-    result, confidence, metrics = predict_mildew(sample_image)
-    
-    # Assertions
-    assert isinstance(result, str)
-    assert isinstance(confidence, float)
-    assert isinstance(metrics, dict)
-    assert result in ["Healthy", "Mildew Detected"]
-    assert 0 <= confidence <= 1
+    with patch('src.model.prediction.model', mock_model):
+        result, confidence, metrics = predict_mildew(test_image)
+        assert isinstance(result, str)
+        assert isinstance(confidence, float)
+        assert isinstance(metrics, dict)
+        assert result in ["Healthy", "Mildew Detected"]
+        assert 0 <= confidence <= 1
 
 
-def test_predict_mildew_no_model(sample_image, monkeypatch):
-    """Test prediction behavior when model is None."""
+def test_predict_mildew_no_model(test_image):
+    """Test prediction with no model."""
     from src.model.prediction import predict_mildew
-    import src.model.prediction as prediction_module
-    
-    # Set model to None
-    monkeypatch.setattr(prediction_module, "model", None)
-    
-    # Test prediction
-    result, confidence, metrics = predict_mildew(sample_image)
-    
-    # Assertions
-    assert isinstance(result, str)
-    assert isinstance(confidence, float)
-    assert isinstance(metrics, dict)
+    with patch('src.model.prediction.model', None):
+        result, confidence, metrics = predict_mildew(test_image)
+        assert isinstance(result, str)
+        assert isinstance(confidence, float)
+        assert isinstance(metrics, dict)

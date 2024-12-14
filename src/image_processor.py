@@ -5,7 +5,6 @@ from PIL import Image
 
 class ImageProcessor:
     """Process images for model prediction."""
-
     def __init__(self, target_size=(224, 224)):
         """Initialize with target image size."""
         self.target_size = target_size
@@ -13,10 +12,9 @@ class ImageProcessor:
     def preprocess(self, image):
         """
         Preprocess image for model input.
-        
+
         Args:
             image: PIL Image or path to image
-            
         Returns:
             numpy array: Processed image
         """
@@ -37,10 +35,8 @@ class ImageProcessor:
     def apply_augmentation(self, image):
         """
         Apply data augmentation to image.
-        
         Args:
             image: PIL Image
-            
         Returns:
             PIL Image: Augmented image
         """
@@ -53,10 +49,8 @@ class ImageProcessor:
         angle = np.random.randint(-30, 30)
         matrix = cv2.getRotationMatrix2D(
             (img_array.shape[1] / 2, img_array.shape[0] / 2),
-            angle, 1.0
-        )
+            angle, 1.0)
         rotated = cv2.warpAffine(
             img_array, matrix,
-            (img_array.shape[1], img_array.shape[0])
-        )
+            (img_array.shape[1], img_array.shape[0]))
         return rotated
