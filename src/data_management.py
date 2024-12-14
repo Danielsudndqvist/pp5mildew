@@ -7,7 +7,7 @@ def load_pkl_file(file_path):
 
     Args:
         file_path: Path to the pickle file
-        
+
     Returns:
         Data from pickle file
     """
@@ -23,7 +23,7 @@ def load_pkl_file(file_path):
 def save_pkl_file(data, file_path):
     """
     Save data to pickle file.
-    
+
     Args:
         data: Data to save
         file_path: Path where to save the file

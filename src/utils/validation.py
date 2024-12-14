@@ -9,15 +9,15 @@ def validate_image(
 ) -> Tuple[bool, str]:
     """
     Validate uploaded image files.
-    
+
     Args:
         image_file: File object or path to validate
-        
+
     Returns:
         tuple: (is_valid, error_message)
             - is_valid (bool): Whether the image is valid
             - error_message (str): Description of any validation errors
-    
+
     Raises:
         None: Exceptions are caught and returned as error messages
     """

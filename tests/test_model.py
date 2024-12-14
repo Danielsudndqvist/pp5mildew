@@ -21,7 +21,7 @@ def test_predict_mildew():
     # Create test image
     test_image = Image.new('RGB', (100, 100))
     result, confidence, metrics = predict_mildew(test_image)
-    
+
     # Verify outputs
     assert result in ["Healthy", "Mildew Detected"]
     assert isinstance(confidence, float)

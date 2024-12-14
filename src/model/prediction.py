@@ -22,11 +22,11 @@ def get_model():
 def process_image(image, target_size=(224, 224)):
     """
     Process image for prediction.
-    
+
     Args:
         image: PIL Image or path to image
         target_size: Tuple of (height, width)
-        
+
     Returns:
         numpy array: Processed image ready for model
     """
@@ -41,10 +41,10 @@ def process_image(image, target_size=(224, 224)):
 def predict_mildew(image):
     """
     Predict if leaf has mildew.
-    
+
     Args:
         image: PIL Image object
-        
+
     Returns:
         tuple: (result, confidence, metrics)
     """

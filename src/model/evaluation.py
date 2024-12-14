@@ -1,39 +1,47 @@
-import json
-import os
-from datetime import datetime
-from sklearn.metrics import confusion_matrix, classification_report
+import numpy as np
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
 
 
-def evaluate_model_performance(y_true, y_pred, y_prob):
-    """
-    Evaluate model performance and save metrics.
-    
-    Args:
-        y_true: True labels
-        y_pred: Predicted labels
-        y_prob: Prediction probabilities
-        
-    Returns:
-        dict: Calculated metrics
-    """
+def evaluate_model(model, test_images, test_labels):
+    """Evaluate model performance."""
+    predictions = model.predict(test_images)
+    pred_labels = (predictions > 0.5).astype(int)
+
+    # Calculate confusion matrix
+    cm = confusion_matrix(test_labels, pred_labels)
+
     # Calculate metrics
-    conf_matrix = confusion_matrix(y_true, y_pred)
-    class_report = classification_report(y_true, y_pred, output_dict=True)
-    
-    # Save metrics
-    metrics = {
-        'accuracy': class_report['accuracy'],
-        'healthy_precision': class_report['0']['precision'],
-        'healthy_recall': class_report['0']['recall'],
-        'mildew_precision': class_report['1']['precision'],
-        'mildew_recall': class_report['1']['recall']
+    accuracy = np.sum(pred_labels == test_labels) / len(test_labels)
+    precision = cm[1, 1] / (cm[1, 1] + cm[0, 1])
+    recall = cm[1, 1] / (cm[1, 1] + cm[1, 0])
+
+    return {
+        'accuracy': accuracy,
+        'precision': precision,
+        'recall': recall,
+        'confusion_matrix': cm
     }
-    
-    # Create outputs directory if it doesn't exist
-    os.makedirs('outputs', exist_ok=True)
-    
-    # Save metrics to JSON
-    with open('outputs/model_metrics.json', 'w') as f:
-        json.dump(metrics, f, indent=4)
-    
-    return metrics
+
+
+def plot_training_history(history):
+    """Plot training history metrics."""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
+
+    # Accuracy plot
+    ax1.plot(history.history['accuracy'], label='Training')
+    ax1.plot(history.history['val_accuracy'], label='Validation')
+    ax1.set_title('Model Accuracy')
+    ax1.set_xlabel('Epoch')
+    ax1.set_ylabel('Accuracy')
+    ax1.legend()
+
+    # Loss plot
+    ax2.plot(history.history['loss'], label='Training')
+    ax2.plot(history.history['val_loss'], label='Validation')
+    ax2.set_title('Model Loss')
+    ax2.set_xlabel('Epoch')
+    ax2.set_ylabel('Loss')
+    ax2.legend()
+
+    return fig
