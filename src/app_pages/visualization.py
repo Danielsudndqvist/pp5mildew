@@ -36,7 +36,8 @@ def show_difference_study():
         if os.path.exists("data/cherry_leaves/healthy"):
             images = os.listdir("data/cherry_leaves/healthy")
             if images:
-                img_path = os.path.join("data/cherry_leaves/healthy", images[0])
+                img_path = os.path.join("data/cherry_leaves/healthy", 
+                images[0])
                 image = Image.open(img_path)
                 st.image(image, caption="Healthy Leaf", use_column_width=True)
 
@@ -45,7 +46,8 @@ def show_difference_study():
         if os.path.exists("data/cherry_leaves/powdery_mildew"):
             images = os.listdir("data/cherry_leaves/powdery_mildew")
             if images:
-                img_path = os.path.join("data/cherry_leaves/powdery_mildew", images[0])
+                img_path = os.path.join("data/cherry_leaves/powdery_mildew", 
+                images[0])
                 image = Image.open(img_path)
                 st.image(image, caption="Infected Leaf", use_column_width=True)
 

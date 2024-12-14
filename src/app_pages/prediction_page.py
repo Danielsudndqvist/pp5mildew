@@ -9,7 +9,7 @@ def app():
     st.title("Leaf Disease Prediction")
 
     st.write("Upload a cherry leaf image for mildew detection.")
-    
+
     uploaded_file = st.file_uploader(
         "Choose an image file",
         type=['png', 'jpg', 'jpeg']
@@ -18,22 +18,22 @@ def app():
     if uploaded_file:
         # Validate uploaded file
         is_valid, error_message = validate_image(uploaded_file)
-        
+
         if not is_valid:
             st.error(error_message)
             return
-        
+
         # Display and analyze image
         image = Image.open(uploaded_file)
         st.image(image, caption="Uploaded Image", use_column_width=True)
-        
+
         if st.button("Analyze Leaf"):
             with st.spinner("Analyzing..."):
                 result, confidence, metrics = predict_mildew(image)
-                
+
                 # Display results
                 display_prediction_results(result, confidence)
-                
+
                 # Show performance metrics
                 display_metrics(metrics)
 
@@ -51,7 +51,7 @@ def display_prediction_results(result, confidence):
 def display_recommendations(infected):
     """Display appropriate recommendations based on prediction."""
     st.write("### Recommendations")
-    
+
     if infected:
         st.write(
             "* Isolate infected plants\n"
@@ -73,7 +73,7 @@ def display_metrics(metrics):
     """Display model performance metrics."""
     st.write("### Model Performance")
     col1, col2, col3 = st.columns(3)
-    
+
     with col1:
         st.metric("Accuracy", f"{metrics['accuracy']:.2%}")
     with col2:
