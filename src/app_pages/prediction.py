@@ -1,4 +1,3 @@
-"""Streamlit application for leaf disease prediction."""
 import streamlit as st
 from PIL import Image
 from src.model.prediction import predict_mildew
