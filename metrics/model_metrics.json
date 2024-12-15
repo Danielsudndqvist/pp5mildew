@@ -1,12 +1,12 @@
 {
     "confusion_matrix": [
         [
-            7,
+            13,
             0
         ],
         [
             0,
-            12
+            18
         ]
     ],
     "accuracy": 1.0,
@@ -141,6 +141,90 @@
         },
         {
             "timestamp": "2024-12-15T20:43:40.682266",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 1.0
+        },
+        {
+            "timestamp": "2024-12-15T20:49:39.663834",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-15T20:49:39.993266",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 1.0
+        },
+        {
+            "timestamp": "2024-12-15T20:51:41.155894",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-15T20:51:41.505155",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 1.0
+        },
+        {
+            "timestamp": "2024-12-15T20:52:05.702272",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-15T20:52:06.040885",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 1.0
+        },
+        {
+            "timestamp": "2024-12-15T20:52:56.201617",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-15T20:52:56.540850",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 1.0
+        },
+        {
+            "timestamp": "2024-12-15T20:54:05.399868",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-15T20:54:05.789883",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 1.0
+        },
+        {
+            "timestamp": "2024-12-15T20:54:54.783665",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.8
+        },
+        {
+            "timestamp": "2024-12-15T20:54:55.115057",
             "accuracy": 1.0,
             "precision": 1.0,
             "recall": 1.0,
