@@ -34,7 +34,6 @@ def get_model():
         model = MODEL  # Sync with test-compatible variable
     return MODEL
 
-
 def process_image(image, target_size=(224, 224)):
     """
     Process image for prediction with detailed logging.
