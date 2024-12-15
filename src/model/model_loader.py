@@ -1,5 +1,5 @@
-"""Model loading utility for mildew detection."""
 import os
+import numpy as np
 from tensorflow import keras
 from src.utils.logger_config import logger
 
@@ -65,13 +65,26 @@ def _create_mock_model():
         A simple Keras model with a predictable output
     """
     from tensorflow.keras.models import Sequential
-    from tensorflow.keras.layers import Dense
+    from tensorflow.keras.layers import Dense, Flatten
 
     model = Sequential([
-        Dense(1, activation='sigmoid', input_shape=(224, 224, 3))
+        Flatten(input_shape=(224, 224, 3)),
+        Dense(1, activation='sigmoid')
     ])
 
-    # Compile the model
-    model.compile(optimizer='adam', loss='binary_crossentropy')
+    def mock_predict(x, verbose=0):
+        """
+        Create a custom prediction method with consistent output.
+
+        Args:
+            x (numpy.ndarray): Input array
+            verbose (int): Verbosity level
+
+        Returns:
+            numpy.ndarray: Prediction array
+        """
+        return np.full((x.shape[0], 1), 0.5)
+
+    model.predict = mock_predict
 
     return model
