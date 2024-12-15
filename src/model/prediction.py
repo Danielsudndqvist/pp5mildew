@@ -1,9 +1,7 @@
-import os
 import traceback
 import numpy as np
 from PIL import Image
 import logging
-import json
 
 from src.model.model_loader import load_model
 from src.model.metrics import MetricsTracker
@@ -24,14 +22,16 @@ if not logger.handlers:
 
 # Initialize global variables
 MODEL = None
+model = None  # Add this line for test compatibility
 METRICS_TRACKER = MetricsTracker()
 
 
 def get_model():
     """Load model if not already loaded."""
-    global MODEL
+    global MODEL, model
     if MODEL is None:
         MODEL = load_model()
+        model = MODEL  # Sync with test-compatible variable
     return MODEL
 
 
@@ -92,8 +92,8 @@ def predict_mildew(image):
         processed_image = process_image(image)
 
         # Get model
-        model = get_model()
-        if model is None:
+        current_model = get_model()
+        if current_model is None:
             logger.error("Model failed to load")
             return "Model not loaded", 0.0, {
                 'accuracy': 0.0,
@@ -107,11 +107,12 @@ def predict_mildew(image):
         logger.info(f"Input Shape: {processed_image.shape}")
         logger.info(f"Input Data Type: {processed_image.dtype}")
         logger.info(
-            f"Input Value Range: {processed_image.min()}-{processed_image.max()}"
+            f"Input Value Range: {processed_image.min()}"
+            f"-{processed_image.max()}"
         )
 
         # Prediction with verbose output
-        prediction = model.predict(processed_image, verbose=1)
+        prediction = current_model.predict(processed_image, verbose=1)
         logger.info(f"Raw Prediction Output: {prediction}")
         logger.info(f"Prediction Shape: {prediction.shape}")
 
@@ -149,69 +150,3 @@ def predict_mildew(image):
             'recall': 0.0,
             'confusion_matrix': [[0, 0], [0, 0]]
         }
-
-
-def analyze_model_prediction(image):
-    """
-    Comprehensive model prediction analysis.
-
-    Args:
-        image (PIL.Image): Input image
-
-    Returns:
-        dict: Detailed prediction diagnostic information
-    """
-    try:
-        # Process image with different preprocessing variations
-        preprocessed_variants = [
-            # Standard preprocessing
-            process_image(image),
-
-            # Alternative normalization
-            np.expand_dims(
-                np.array(image.resize((224, 224))) / 255.0,
-                axis=0
-            ),
-
-            # Pixel scaling
-            np.expand_dims(
-                (np.array(image.resize((224, 224))).astype('float32')
-                 - 127.5) / 127.5,
-                axis=0
-            )
-        ]
-
-        model = get_model()
-        if not model:
-            return {"error": "Model not loaded"}
-
-        # Predict with different preprocessing
-        predictions = [
-            model.predict(variant, verbose=0)[0][0]
-            for variant in preprocessed_variants
-        ]
-
-        return {
-            "preprocessing_variants": [
-                {
-                    "min_value": float(variant.min()),
-                    "max_value": float(variant.max()),
-                    "mean_value": float(variant.mean()),
-                    "prediction": float(pred)
-                }
-                for variant, pred in zip(preprocessed_variants, predictions)
-            ],
-            "input_image_details": {
-                "original_size": image.size,
-                "mode": image.mode,
-                "pixel_stats": {
-                    "min": float(np.array(image).min()),
-                    "max": float(np.array(image).max()),
-                    "mean": float(np.array(image).mean())
-                }
-            }
-        }
-
-    except Exception as e:
-        logger.error(f"Diagnostic analysis error: {str(e)}")
-        return {"error": str(e)}
