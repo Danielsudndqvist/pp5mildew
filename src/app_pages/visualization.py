@@ -56,25 +56,25 @@ def show_statistical_analysis():
     # Create Plotly histogram using go.Figure
     fig = go.Figure()
     fig.add_trace(go.Histogram(
-        x=healthy_data, 
-        name='Healthy Leaves', 
-        marker_color='blue', 
+        x=healthy_data,
+        name='Healthy Leaves',
+        marker_color='blue',
         opacity=0.7
     ))
     fig.add_trace(go.Histogram(
-        x=infected_data, 
-        name='Infected Leaves', 
-        marker_color='red', 
+        x=infected_data,
+        name='Infected Leaves',
+        marker_color='red',
         opacity=0.7
     ))
-    
+
     fig.update_layout(
         title="Distribution of Leaf Features",
         xaxis_title="Feature Value",
         yaxis_title="Frequency",
         barmode='overlay'
     )
-    
+
     st.plotly_chart(fig)
 
 
