@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run src/app.py
+web: sh setup.sh && python -m pip install -r requirements.txt && python -c "import tensorflow as tf; print(tf.__version__)" && streamlit run src/app.py

@@ -1,3 +1,5 @@
+import os
+import traceback
 import numpy as np
 from PIL import Image
 import logging
@@ -24,10 +26,40 @@ metrics_tracker = MetricsTracker()
 
 
 def get_model():
-    """Load model if not already loaded."""
+    """Load model with extensive logging and error handling."""
     global model
     if model is None:
-        model = load_model()
+        try:
+            # Log current working directory and search paths
+            logger.info(f"Current working directory: {os.getcwd()}")
+            logger.info(f"Python path: {os.environ.get('PYTHONPATH', 'Not set')}")
+            
+            # Add explicit path logging
+            model_path = os.path.join(os.getcwd(), 'src', 'model', 'trained_model')
+            logger.info(f"Attempting to load model from: {model_path}")
+            
+            # List contents of potential model directories
+            logger.info("Contents of current directory:")
+            logger.info(os.listdir('.'))
+            logger.info("Contents of src directory:")
+            logger.info(os.listdir('src') if os.path.exists('src') else "src not found")
+            
+            # Attempt to load model
+            model = load_model()
+            
+            if model is None:
+                logger.error("Model loading returned None")
+                return None
+            
+            logger.info("Model successfully loaded")
+            return model
+        
+        except Exception as e:
+            logger.error(f"Model loading error: {str(e)}")
+            # Log full traceback
+            logger.error(f"Full traceback: {traceback.format_exc()}")
+            return None
+    
     return model
 
 
@@ -47,7 +79,7 @@ def process_image(image, target_size=(224, 224)):
 
 def predict_mildew(image):
     """
-    Predict if leaf has mildew.
+    Predict if leaf has mildew with extensive logging and error handling.
 
     Args:
         image: PIL Image object
@@ -56,17 +88,39 @@ def predict_mildew(image):
         tuple: (result, confidence, metrics)
     """
     try:
+        # Log image details
+        logger.info(f"Image type: {type(image)}")
+        if hasattr(image, 'size'):
+            logger.info(f"Image size: {image.size}")
+        
         # Process image
         processed_image = process_image(image)
+        logger.info(f"Processed image shape: {processed_image.shape}")
 
         # Get model prediction
         model = get_model()
         if model is None:
-            return "Model not loaded", 0.0, metrics_tracker.get_metrics()
+            logger.error("Model failed to load")
+            return "Model not loaded", 0.0, {
+                'accuracy': 0.0,
+                'precision': 0.0,
+                'recall': 0.0,
+                'confusion_matrix': [[0, 0], [0, 0]]
+            }
 
-        # Get raw prediction and convert to Python float
-        raw_prediction = float(model.predict(processed_image, verbose=0)[0][0])
-        logger.info(f"Raw prediction value: {raw_prediction}")
+        # Get raw prediction and log details
+        try:
+            raw_prediction = float(model.predict(processed_image, verbose=0)[0][0])
+            logger.info(f"Raw prediction value: {raw_prediction}")
+        except Exception as pred_error:
+            logger.error(f"Prediction error: {str(pred_error)}")
+            logger.error(f"Full traceback: {traceback.format_exc()}")
+            return "Prediction Error", 0.0, {
+                'accuracy': 0.0,
+                'precision': 0.0,
+                'recall': 0.0,
+                'confusion_matrix': [[0, 0], [0, 0]]
+            }
 
         # Prediction logic
         if raw_prediction < 0.5:
@@ -76,20 +130,28 @@ def predict_mildew(image):
             result = "Mildew Detected"
             confidence = float(raw_prediction)
 
-        logger.info
-        (f"Final prediction: {result} with confidence: {confidence}")
+        logger.info(f"Final prediction: {result} with confidence: {confidence}")
 
-        # Convert metrics
-        metrics = metrics_tracker.get_metrics()
-        metrics = {
-            'accuracy': float(metrics['accuracy']),
-            'precision': float(metrics['precision']),
-            'recall': float(metrics['recall']),
-            'confusion_matrix': [
-                [int(x) for x in row]
-                for row in metrics['confusion_matrix']
-            ]
-        }
+        # Retrieve metrics
+        try:
+            metrics = metrics_tracker.get_metrics()
+            metrics = {
+                'accuracy': float(metrics.get('accuracy', 0.0)),
+                'precision': float(metrics.get('precision', 0.0)),
+                'recall': float(metrics.get('recall', 0.0)),
+                'confusion_matrix': [
+                    [int(x) for x in row]
+                    for row in metrics.get('confusion_matrix', [[0, 0], [0, 0]])
+                ]
+            }
+        except Exception as metrics_error:
+            logger.error(f"Metrics retrieval error: {str(metrics_error)}")
+            metrics = {
+                'accuracy': 0.0,
+                'precision': 0.0,
+                'recall': 0.0,
+                'confusion_matrix': [[0, 0], [0, 0]]
+            }
 
         # Update metrics
         predicted_label = 0 if result == "Healthy" else 1
@@ -102,7 +164,8 @@ def predict_mildew(image):
         return result, confidence, metrics
 
     except Exception as e:
-        logger.error(f"Prediction error: {str(e)}")
+        logger.error(f"Comprehensive prediction error: {str(e)}")
+        logger.error(f"Full traceback: {traceback.format_exc()}")
         return "Error in prediction", 0.0, {
             'accuracy': 0.0,
             'precision': 0.0,
