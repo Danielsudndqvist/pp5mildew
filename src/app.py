@@ -1,5 +1,13 @@
 import streamlit as st
-from app_pages import home, visualization, prediction
+import sys
+import os
+from pathlib import Path
+
+# Add src directory to Python path
+src_path = Path(__file__).parent.parent
+sys.path.append(str(src_path))
+
+from src.app_pages import home, visualization, prediction
 
 
 def main():
