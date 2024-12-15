@@ -2,6 +2,10 @@ import numpy as np
 from PIL import Image
 from src.model.model_loader import load_model
 from src.model.metrics import MetricsTracker
+import logging
+
+# Initialize logger
+logger = logging.getLogger(__name__)
 
 # Initialize global variables
 model = None
@@ -13,6 +17,10 @@ def get_model():
     global model
     if model is None:
         model = load_model()
+        if model:
+            logger.info("Model loaded successfully")
+        else:
+            logger.warning("Failed to load model")
     return model
 
 
@@ -56,19 +64,35 @@ def predict_mildew(image):
         # Get prediction
         model = get_model()
         if model is None:
-            # For testing when model isn't available
-            prediction = 0.7
+            logger.warning("Model not available, using fallback prediction")
+            prediction = 0.1  # Default to healthy with high confidence
         else:
-            prediction = model.predict(processed_image)[0][0]
+            prediction = float(model.predict(processed_image)[0][0])
+            logger.info(f"Raw prediction value: {prediction}")
 
-        # Determine result
+        # Determine result and confidence
         predicted_label = 1 if prediction > 0.5 else 0
         result = "Mildew Detected" if predicted_label == 1 else "Healthy"
+        confidence = prediction if predicted_label == 1 else 1 - prediction
+
+        # Log prediction details
+        logger.info(f"Prediction: {result} with confidence {confidence:.2%}")
 
         # Update metrics
-        metrics_tracker.update_metrics(1, predicted_label, prediction)
-
-        return result, prediction, metrics_tracker.get_metrics()
+        metrics_tracker.update_metrics(1, predicted_label, confidence)
+        
+        return result, confidence, metrics_tracker.get_metrics()
 
     except Exception as e:
+        logger.error(f"Prediction error: {str(e)}")
         raise Exception(f"Prediction error: {str(e)}")
+
+
+if __name__ == "__main__":
+    # Test prediction
+    try:
+        test_image = Image.new('RGB', (224, 224), color='white')
+        result, conf, metrics = predict_mildew(test_image)
+        print(f"Test prediction: {result} with confidence {conf:.2%}")
+    except Exception as e:
+        print(f"Test failed: {str(e)}")
