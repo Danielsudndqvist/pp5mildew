@@ -88,6 +88,15 @@ def predict_mildew(image):
         tuple: (result, confidence, metrics)
     """
     try:
+        # Detailed system and environment logging
+        import sys
+        import platform
+
+        logger.info("System Information:")
+        logger.info(f"Python Version: {sys.version}")
+        logger.info(f"Platform: {platform.platform()}")
+        logger.info(f"Python Executable: {sys.executable}")
+
         # Process image with detailed logging
         processed_image = process_image(image)
 
@@ -113,25 +122,32 @@ def predict_mildew(image):
 
         # Prediction with verbose output
         prediction = current_model.predict(processed_image, verbose=1)
+        logger.info(f"Raw Prediction Output Type: {type(prediction)}")
         logger.info(f"Raw Prediction Output: {prediction}")
         logger.info(f"Prediction Shape: {prediction.shape}")
+        logger.info(f"Prediction Dtype: {prediction.dtype}")
 
         # Extract scalar prediction value
         try:
-            # Handle different prediction shape scenarios
+            # Detailed conversion logging
             if prediction.ndim > 2:
-                # Reduce the array to scalar using mean or another method
-                raw_prediction = np.mean(prediction)
+                logger.info("Multi-dimensional prediction detected")
+                raw_prediction = float(np.mean(prediction))
+            elif prediction.ndim == 2:
+                logger.info("2D prediction detected")
+                raw_prediction = float(prediction[0][0])
             else:
-                raw_prediction = prediction[0][0]
+                logger.info("Scalar prediction detected")
+                raw_prediction = float(prediction)
 
             # Ensure raw_prediction is a float between 0 and 1
             raw_prediction = float(np.clip(raw_prediction, 0, 1))
+
+            logger.info(f"Converted Prediction Value: {raw_prediction}")
         except Exception as conv_error:
             logger.error(f"Prediction conversion error: {str(conv_error)}")
+            logger.error(f"Full traceback: {traceback.format_exc()}")
             raw_prediction = 0.5  # Default to neutral prediction
-
-        logger.info(f"Scalar Prediction Value: {raw_prediction}")
 
         # Detailed classification logic
         if raw_prediction < 0.5:
@@ -153,6 +169,16 @@ def predict_mildew(image):
         }
 
         return result, float(confidence), default_metrics
+
+    except Exception as e:
+        logger.error(f"Comprehensive Prediction Error: {str(e)}")
+        logger.error(f"Full traceback: {traceback.format_exc()}")
+        return "Mildew Detected", 0.5, {
+            'accuracy': 0.0,
+            'precision': 0.0,
+            'recall': 0.0,
+            'confusion_matrix': [[0, 0], [0, 0]]
+        }
 
     except Exception as e:
         logger.error(f"Prediction Error: {str(e)}")

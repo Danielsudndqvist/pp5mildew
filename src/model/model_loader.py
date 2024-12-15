@@ -74,7 +74,7 @@ def _create_mock_model():
 
     def mock_predict(x, verbose=0):
         """
-        Create a custom prediction method with consistent output.
+        Consistent mock prediction method.
 
         Args:
             x (numpy.ndarray): Input array
@@ -83,8 +83,10 @@ def _create_mock_model():
         Returns:
             numpy.ndarray: Prediction array
         """
-        return np.full((x.shape[0], 1), 0.5)
+        # Always return a consistent prediction close to the midpoint
+        return np.array([[0.5]], dtype=np.float32)
 
+    # Replace the predict method with a consistent mock
     model.predict = mock_predict
 
     return model
