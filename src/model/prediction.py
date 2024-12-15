@@ -35,11 +35,11 @@ def process_image(image, target_size=(224, 224)):
     """Process image for prediction."""
     if isinstance(image, str):
         image = Image.open(image)
-    
+
     # Resize and convert to array
     img = image.resize(target_size)
     img_array = np.array(img)
-    
+
     # Normalize
     processed = img_array.astype('float32') / 255.0
     return np.expand_dims(processed, axis=0)
@@ -48,17 +48,17 @@ def process_image(image, target_size=(224, 224)):
 def predict_mildew(image):
     """
     Predict if leaf has mildew.
-    
+
     Args:
         image: PIL Image object
-        
+
     Returns:
         tuple: (result, confidence, metrics)
     """
     try:
         # Process image
         processed_image = process_image(image)
-        
+
         # Get model prediction
         model = get_model()
         if model is None:
@@ -76,8 +76,9 @@ def predict_mildew(image):
             result = "Mildew Detected"
             confidence = float(raw_prediction)
 
-        logger.info(f"Final prediction: {result} with confidence: {confidence}")
-        
+        logger.info
+        (f"Final prediction: {result} with confidence: {confidence}")
+
         # Convert metrics
         metrics = metrics_tracker.get_metrics()
         metrics = {
@@ -85,15 +86,19 @@ def predict_mildew(image):
             'precision': float(metrics['precision']),
             'recall': float(metrics['recall']),
             'confusion_matrix': [
-                [int(x) for x in row] 
+                [int(x) for x in row]
                 for row in metrics['confusion_matrix']
             ]
         }
-        
+
         # Update metrics
         predicted_label = 0 if result == "Healthy" else 1
-        metrics_tracker.update_metrics(predicted_label, predicted_label, confidence)
-        
+        metrics_tracker.update_metrics(
+            predicted_label,
+            predicted_label,
+            confidence
+        )
+
         return result, confidence, metrics
 
     except Exception as e:
@@ -117,7 +122,9 @@ def debug_prediction(image):
                 'raw_prediction': raw_pred,
                 'threshold': 0.5,
                 'would_classify_as': 'Healthy' if raw_pred < 0.5 else 'Mildew',
-                'confidence': float(1 - raw_pred if raw_pred < 0.5 else raw_pred)
+                'confidence': float(
+                    1 - raw_pred if raw_pred < 0.5 else raw_pred
+                ),
             }
     except Exception as e:
         logger.error(f"Debug error: {str(e)}")
