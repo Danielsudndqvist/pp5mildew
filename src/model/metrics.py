@@ -48,7 +48,7 @@ class MetricsTracker:
 
         denom = cm[1][1] + cm[0][1]
         self.metrics['precision'] = cm[1][1] / denom if denom > 0 else 0
-        
+
         denom = cm[1][1] + cm[1][0]
         self.metrics['recall'] = cm[1][1] / denom if denom > 0 else 0
 

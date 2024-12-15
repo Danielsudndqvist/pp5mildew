@@ -5,7 +5,7 @@ def app():
     """Render the home page."""
     # Title and Project Overview
     st.title("Cherry Leaf Mildew Detection")
-    
+
     st.write("""
     ## Project Overview
     This application uses machine learning to detect powdery mildew infection

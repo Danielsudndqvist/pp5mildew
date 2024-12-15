@@ -1,79 +1,73 @@
 import streamlit as st
 from PIL import Image
 from src.model.prediction import predict_mildew
-from src.utils.validation import validate_image
 
 
 def app():
     """Render the prediction page."""
     st.title("Leaf Disease Prediction")
+    st.write("Upload a cherry leaf image for mildew detection.")
 
-    # Add debug toggle in sidebar
-    debug_mode = st.sidebar.checkbox("Show Debug Info")
-
-    st.write("### Upload Cherry Leaf Images")
-
-    uploaded_files = st.file_uploader(
-        "Choose image files",
-        type=['png', 'jpg', 'jpeg'],
-        accept_multiple_files=True,
-        help="Upload one or more images of cherry leaves for analysis"
+    # File uploader
+    uploaded_file = st.file_uploader(
+        "Choose an image file",
+        type=['png', 'jpg', 'jpeg']
     )
 
-    if uploaded_files:
-        st.write("### Analysis Results")
+    if uploaded_file:
+        # Display image
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Uploaded Image", use_column_width=True)
 
-        for uploaded_file in uploaded_files:
-            col1, col2 = st.columns([1, 1])
+        # Make prediction
+        if st.button("Analyze"):
+            with st.spinner("Analyzing..."):
+                result, confidence, metrics = predict_mildew(image)
+                show_prediction_results(result, confidence)
+                show_metrics(metrics)
 
-            with col1:
-                is_valid, error_message = validate_image(uploaded_file)
-                if not is_valid:
-                    st.error(f"Error with {uploaded_file.name}: {error_message}")
-                    continue
 
-                image = Image.open(uploaded_file)
-                st.image(image, caption=uploaded_file.name)
-
-            with col2:
-                with st.spinner("Analyzing..."):
-                    result, confidence, metrics = predict_mildew(image)
-
-                    # Show prediction
-                    if result == "Healthy":
-                        st.success(
-                            f"✅ Leaf is Healthy\n\n"
-                            f"Confidence: {confidence:.1%}"
-                        )
-                    else:
-                        st.error(
-                            f"🔴 Mildew Detected\n\n"
-                            f"Confidence: {confidence:.1%}"
-                        )
-
-                    # Debug information
-                    if debug_mode:
-                        st.write("### Debug Information")
-                        st.write("Raw prediction details:")
-                        st.json({
-                            "Result": result,
-                            "Confidence": f"{confidence:.3f}",
-                            "Metrics": metrics,
-                        })
-
-                        # Show model performance metrics
-                        st.write("### Model Metrics")
-                        if 'confusion_matrix' in metrics:
-                            st.write("Confusion Matrix:", metrics['confusion_matrix'])
-                        st.write(f"Accuracy: {metrics.get('accuracy', 'N/A')}")
-                        st.write(f"Precision: {metrics.get('precision', 'N/A')}")
-                        st.write(f"Recall: {metrics.get('recall', 'N/A')}")
-
-            st.write("---")
-
+def show_prediction_results(result, confidence):
+    """Display prediction results."""
+    if result == "Healthy":
+        st.success(f"✅ Leaf is Healthy\nConfidence: {confidence:.1%}")
+        show_healthy_recommendations()
     else:
-        st.write("Please upload an image to begin analysis.")
+        st.error(f"🔴 Mildew Detected\nConfidence: {confidence:.1%}")
+        show_mildew_recommendations()
 
 
-if __name__ == "__main__":
-    app()
+def show_healthy_recommendations():
+    """Show recommendations for healthy leaves."""
+    st.write("""
+    ### Recommendations:
+    * Continue regular monitoring
+    * Maintain good ventilation
+    * Practice preventive care
+    * Keep leaves dry
+    """)
+
+
+def show_mildew_recommendations():
+    """Show recommendations for infected leaves."""
+    st.write("""
+    ### Recommendations:
+    * Isolate infected plants
+    * Apply appropriate fungicide
+    * Improve air circulation
+    * Monitor surrounding plants
+    * Schedule follow-up inspection
+    """)
+
+
+def show_metrics(metrics):
+    """Display model metrics."""
+    st.write("### Model Performance")
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric("Accuracy", f"{metrics['accuracy']:.2%}")
+    with col2:
+        st.metric("Precision", f"{metrics['precision']:.2%}")
+    with col3:
+        st.metric("Recall", f"{metrics['recall']:.2%}")
