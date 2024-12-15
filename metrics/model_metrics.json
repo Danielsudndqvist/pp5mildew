@@ -1,7 +1,7 @@
 {
     "confusion_matrix": [
         [
-            5,
+            7,
             0
         ],
         [
@@ -131,6 +131,20 @@
             "precision": 1.0,
             "recall": 1.0,
             "confidence": 0.9999983739890013
+        },
+        {
+            "timestamp": "2024-12-15T20:37:25.481395",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 1.0
+        },
+        {
+            "timestamp": "2024-12-15T20:43:40.682266",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 1.0
         }
     ]
 }

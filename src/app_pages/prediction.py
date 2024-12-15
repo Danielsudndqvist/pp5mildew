@@ -1,3 +1,4 @@
+"""Streamlit application for leaf disease prediction."""
 import streamlit as st
 from PIL import Image
 from src.model.prediction import predict_mildew
@@ -17,7 +18,12 @@ def app():
     if uploaded_file:
         # Display image
         image = Image.open(uploaded_file)
-        st.image(image, caption="Uploaded Image", use_container_width=True)
+
+        # Compatible image display
+        try:
+            st.image(image, caption="Uploaded Image", use_container_width=True)
+        except TypeError:
+            st.image(image, caption="Uploaded Image")
 
         # Make prediction
         if st.button("Analyze"):
@@ -61,7 +67,7 @@ def show_mildew_recommendations():
 
 
 def show_metrics(metrics):
-    """Display model metrics."""
+    """Display model performance metrics."""
     st.write("### Model Performance")
     col1, col2, col3 = st.columns(3)
 
