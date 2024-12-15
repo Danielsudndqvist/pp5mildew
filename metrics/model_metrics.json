@@ -1,12 +1,12 @@
 {
     "confusion_matrix": [
         [
-            2,
+            5,
             0
         ],
         [
             0,
-            10
+            12
         ]
     ],
     "accuracy": 1.0,
@@ -96,6 +96,41 @@
             "precision": 1.0,
             "recall": 1.0,
             "confidence": 0.9968813061714172
+        },
+        {
+            "timestamp": "2024-12-15T20:16:04.842452",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 1.0
+        },
+        {
+            "timestamp": "2024-12-15T20:16:14.838544",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 1.0
+        },
+        {
+            "timestamp": "2024-12-15T20:16:26.986598",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.9999995422206496
+        },
+        {
+            "timestamp": "2024-12-15T20:19:07.466798",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 1.0
+        },
+        {
+            "timestamp": "2024-12-15T20:19:25.214669",
+            "accuracy": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "confidence": 0.9999983739890013
         }
     ]
 }
