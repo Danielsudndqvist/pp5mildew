@@ -2,7 +2,6 @@ import traceback
 import numpy as np
 from PIL import Image
 import logging
-
 from src.model.model_loader import load_model
 from src.model.metrics import MetricsTracker
 
@@ -22,8 +21,8 @@ if not logger.handlers:
 
 # Initialize global variables
 MODEL = None
-model = None  # Add this line for test compatibility
-METRICS_TRACKER = MetricsTracker()
+model = None  # For test compatibility
+METRICS_TRACKER = MetricsTracker()  # Use uppercase for global
 
 
 def get_model():
@@ -36,156 +35,95 @@ def get_model():
 
 
 def process_image(image, target_size=(224, 224)):
-    """
-    Process image for prediction with detailed logging.
+    """Process image for prediction with detailed logging."""
+    try:
+        if isinstance(image, str):
+            image = Image.open(image)
 
-    Args:
-        image (PIL.Image or str): Input image
-        target_size (tuple): Target image size
+        logger.info(f"Original Image - Mode: {image.mode}, Size: {image.size}")
 
-    Returns:
-        numpy.ndarray: Processed image array
-    """
-    if isinstance(image, str):
-        image = Image.open(image)
+        # Resize and convert to array
+        img = image.resize(target_size)
+        img_array = np.array(img)
 
-    # Log original image details
-    logger.info(f"Original Image - Mode: {image.mode}, Size: {image.size}")
+        logger.info(
+            f"Processed Array - Shape: {img_array.shape}, "
+            f"Dtype: {img_array.dtype}"
+        )
 
-    # Resize and convert to array
-    img = image.resize(target_size)
-    img_array = np.array(img)
+        # Normalize
+        processed = img_array.astype('float32') / 255.0
+        logger.info(
+            f"Normalized Array - Shape: {processed.shape}, "
+            f"Range: {processed.min()}-{processed.max()}"
+        )
 
-    # Detailed array logging
-    logger.info(
-        f"Processed Array - Shape: {img_array.shape}, "
-        f"Dtype: {img_array.dtype}"
-    )
-    logger.info(
-        f"Pixel Value Range: Min={img_array.min()}, Max={img_array.max()}"
-    )
+        return np.expand_dims(processed, axis=0)
 
-    # Normalize
-    processed = img_array.astype('float32') / 255.0
-
-    # Additional logging
-    logger.info(
-        f"Normalized Array - Shape: {processed.shape}, "
-        f"Range: {processed.min()}-{processed.max()}"
-    )
-
-    return np.expand_dims(processed, axis=0)
+    except Exception as e:
+        logger.error(f"Image processing error: {str(e)}")
+        raise
 
 
 def predict_mildew(image):
-    """
-    Comprehensive mildew prediction with extensive diagnostics.
-
-    Args:
-        image (PIL.Image): Image to predict
-
-    Returns:
-        tuple: (result, confidence, metrics)
-    """
+    """Predict mildew presence in image with detailed error handling."""
     try:
-        # Detailed system and environment logging
-        import sys
-        import platform
-
-        logger.info("System Information:")
-        logger.info(f"Python Version: {sys.version}")
-        logger.info(f"Platform: {platform.platform()}")
-        logger.info(f"Python Executable: {sys.executable}")
-
-        # Process image with detailed logging
+        # Process image
         processed_image = process_image(image)
 
         # Get model
         current_model = get_model()
         if current_model is None:
             logger.error("Model failed to load")
-            return "Mildew Detected", 0.5, {
-                'accuracy': 0.0,
-                'precision': 0.0,
-                'recall': 0.0,
-                'confusion_matrix': [[0, 0], [0, 0]]
-            }
+            return "Error: Model not loaded", 0.0, get_default_metrics()
 
-        # Comprehensive prediction logging
-        logger.info("Prediction Input Details:")
-        logger.info(f"Input Shape: {processed_image.shape}")
-        logger.info(f"Input Data Type: {processed_image.dtype}")
-        logger.info(
-            f"Input Value Range: {processed_image.min()}"
-            f"-{processed_image.max()}"
-        )
+        # Make prediction
+        prediction = current_model.predict(processed_image, verbose=0)
+        logger.info(f"Raw prediction: {prediction}")
 
-        # Prediction with verbose output
-        prediction = current_model.predict(processed_image, verbose=1)
-        logger.info(f"Raw Prediction Output Type: {type(prediction)}")
-        logger.info(f"Raw Prediction Output: {prediction}")
-        logger.info(f"Prediction Shape: {prediction.shape}")
-        logger.info(f"Prediction Dtype: {prediction.dtype}")
+        # Process prediction value
+        raw_prediction = float(prediction[0][0])
+        raw_prediction = float(np.clip(raw_prediction, 0, 1))
+        logger.info(f"Processed prediction: {raw_prediction}")
 
-        # Extract scalar prediction value
-        try:
-            # Detailed conversion logging
-            if prediction.ndim > 2:
-                logger.info("Multi-dimensional prediction detected")
-                raw_prediction = float(np.mean(prediction))
-            elif prediction.ndim == 2:
-                logger.info("2D prediction detected")
-                raw_prediction = float(prediction[0][0])
-            else:
-                logger.info("Scalar prediction detected")
-                raw_prediction = float(prediction)
-
-            # Ensure raw_prediction is a float between 0 and 1
-            raw_prediction = float(np.clip(raw_prediction, 0, 1))
-
-            logger.info(f"Converted Prediction Value: {raw_prediction}")
-        except Exception as conv_error:
-            logger.error(f"Prediction conversion error: {str(conv_error)}")
-            logger.error(f"Full traceback: {traceback.format_exc()}")
-            raw_prediction = 0.5  # Default to neutral prediction
-
-        # Detailed classification logic
+        # Determine result
         if raw_prediction < 0.5:
             result = "Healthy"
-            confidence = 1 - raw_prediction
+            confidence = float(1 - raw_prediction)
         else:
             result = "Mildew Detected"
-            confidence = raw_prediction
+            confidence = float(raw_prediction)
 
-        logger.info(f"Final Classification: {result}")
-        logger.info(f"Confidence: {confidence}")
+        logger.info(f"Classification: {result}, Confidence: {confidence}")
 
-        # Default metrics
-        default_metrics = {
-            'accuracy': 0.8,
-            'precision': 0.75,
-            'recall': 0.85,
-            'confusion_matrix': [[80, 20], [15, 85]]
-        }
-
-        return result, float(confidence), default_metrics
+        # Get metrics
+        return result, confidence, get_formatted_metrics()
 
     except Exception as e:
-        logger.error(f"Comprehensive Prediction Error: {str(e)}")
-        logger.error(f"Full traceback: {traceback.format_exc()}")
-        return "Mildew Detected", 0.5, {
-            'accuracy': 0.0,
-            'precision': 0.0,
-            'recall': 0.0,
-            'confusion_matrix': [[0, 0], [0, 0]]
-        }
+        logger.error(f"Prediction error: {str(e)}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return "Error: Prediction failed", 0.0, get_default_metrics()
 
-    except Exception as e:
-        logger.error(f"Prediction Error: {str(e)}")
-        logger.error(traceback.format_exc())
-        return "Mildew Detected", 0.5, {
-            'accuracy': 0.0,
-            'precision': 0.0,
-            'recall': 0.0,
-            'confusion_matrix': [[0, 0], [0, 0]]
-        }
+
+def get_default_metrics():
+    """Return default metrics structure."""
+    return {
+        'accuracy': 0.0,
+        'precision': 0.0,
+        'recall': 0.0,
+        'confusion_matrix': [[0, 0], [0, 0]]
+    }
+
+
+def get_formatted_metrics():
+    """Get and format current metrics."""
+    metrics = METRICS_TRACKER.get_metrics()
+    return {
+        'accuracy': float(metrics['accuracy']),
+        'precision': float(metrics['precision']),
+        'recall': float(metrics['recall']),
+        'confusion_matrix': [
+            [int(x) for x in row]
+            for row in metrics['confusion_matrix']
+        ]
+    }
