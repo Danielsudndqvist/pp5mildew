@@ -1,8 +1,7 @@
+import os
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras import layers, models
-import matplotlib.pyplot as plt
-import os
 
 def create_model():
     """Create the CNN model architecture."""
@@ -37,7 +36,10 @@ def train_model():
     IMAGE_SIZE = (224, 224)
     BATCH_SIZE = 32
 
-    print("Setting up data generators...")
+    # Ensure data directory exists
+    os.makedirs(TRAIN_DATA_DIR, exist_ok=True)
+
+    # Data Augmentation and Preprocessing
     train_datagen = ImageDataGenerator(
         rescale=1./255,
         validation_split=0.2,
@@ -50,40 +52,38 @@ def train_model():
         fill_mode='nearest'
     )
 
-    print("Loading training data...")
+    # Data Generators
     train_generator = train_datagen.flow_from_directory(
         TRAIN_DATA_DIR,
         target_size=IMAGE_SIZE,
         batch_size=BATCH_SIZE,
         class_mode='binary',
-        classes=['healthy', 'powdery_mildew'],  # Explicitly specify classes
+        classes=['healthy', 'powdery_mildew'],
         subset='training'
     )
 
-    print("Loading validation data...")
     validation_generator = train_datagen.flow_from_directory(
         TRAIN_DATA_DIR,
         target_size=IMAGE_SIZE,
         batch_size=BATCH_SIZE,
         class_mode='binary',
-        classes=['healthy', 'powdery_mildew'],  # Explicitly specify classes
+        classes=['healthy', 'powdery_mildew'],
         subset='validation'
     )
 
-    print("Creating model...")
+    # Create and Compile Model
     model = create_model()
-    
     model.compile(
         optimizer='adam',
         loss='binary_crossentropy',
         metrics=['accuracy']
     )
 
-    print("Training model...")
+    # Train Model
     history = model.fit(
         train_generator,
         steps_per_epoch=len(train_generator),
-        epochs=15,  # Increased epochs
+        epochs=15,
         validation_data=validation_generator,
         validation_steps=len(validation_generator),
         callbacks=[
@@ -95,40 +95,14 @@ def train_model():
         ]
     )
 
-    # Save the model
-    print("Saving model...")
+    # Save Model
     os.makedirs('models', exist_ok=True)
     model.save('models/mildew_model.h5')
 
-    # Plot training history
-    plt.figure(figsize=(12, 4))
-    plt.subplot(1, 2, 1)
-    plt.plot(history.history['accuracy'])
-    plt.plot(history.history['val_accuracy'])
-    plt.title('Model Accuracy')
-    plt.ylabel('Accuracy')
-    plt.xlabel('Epoch')
-    plt.legend(['Train', 'Validation'])
-
-    plt.subplot(1, 2, 2)
-    plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss'])
-    plt.title('Model Loss')
-    plt.ylabel('Loss')
-    plt.xlabel('Epoch')
-    plt.legend(['Train', 'Validation'])
-
-    os.makedirs('outputs/plots', exist_ok=True)
-    plt.savefig('outputs/plots/training_history.png')
-
-    # Print class indices to verify labels
-    print("\nClass indices:", train_generator.class_indices)
-    
-    # Evaluate model
-    print("\nEvaluating model...")
-    test_loss, test_accuracy = model.evaluate(validation_generator)
-    print(f"Test Accuracy: {test_accuracy:.4f}")
-    print(f"Test Loss: {test_loss:.4f}")
+    # Print Training Results
+    print("\nTraining Complete!")
+    print(f"Final Training Accuracy: {history.history['accuracy'][-1]:.4f}")
+    print(f"Final Validation Accuracy: {history.history['val_accuracy'][-1]:.4f}")
 
 if __name__ == "__main__":
     train_model()
