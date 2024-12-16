@@ -32,7 +32,6 @@ mildew_env/
 *.swo
 
 # Project specific
-models/*.h5
 logs/
 outputs/
 .coverage
